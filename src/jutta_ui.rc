@@ -1,0 +1,22 @@
+#include "jutta_ui_res_header.h"
+
+id ICON ICON_FILE
+1 VERSIONINFO
+FILEVERSION     VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,0
+PRODUCTVERSION  VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,0
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "080904E4"
+    BEGIN
+      VALUE "CompanyName", ""
+      VALUE "FileDescription", DESCRIPTION
+      VALUE "FileVersion", VERSION
+      VALUE "InternalName", PROGRAMM_INT_NAME
+      VALUE "LegalCopyright", ""
+      VALUE "OriginalFilename", EXEC_NAME
+      VALUE "ProductName", PROGRAMM_NAME
+      VALUE "ProductVersion", VERSION
+    END
+  END
+END
