@@ -24,10 +24,10 @@ void setup_logger(const spdlog::level::level_enum level) {
     spdlog::sink_ptr console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_pattern("[%^%=8l%$] [thread %t]\t%v");
 #ifdef _WIN32
-    std::string s = (logger::log_folder / "PaperSearch.log").string();
+    std::string s = (logger::log_folder / "jutta.log").string();
     spdlog::sink_ptr file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(s, FILE_ROTATION_TIME, 3);
 #else  // _WIN32
-    spdlog::sink_ptr file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logger::log_folder / "PaperSearch.log", FILE_ROTATION_TIME, 3);
+    spdlog::sink_ptr file_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(logger::log_folder / "jutta.log", FILE_ROTATION_TIME, 3);
 #endif
     file_sink->set_pattern("[%H:%M:%S %z] [%=8l] [thread %t] [%@]\t%v");
     std::vector<spdlog::sink_ptr> sinks{file_sink, console_sink};
