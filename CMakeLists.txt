@@ -73,17 +73,13 @@ else()
     set(CONAN_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 endif()
 
-conan_cmake_run(REQUIRES
-                        catch2/2.13.3
-                        spdlog/1.8.0
-                SETTINGS
-                        compiler.cppstd=${CMAKE_CXX_STANDARD}
-                        os=${CMAKE_SYSTEM_NAME}
-                OPTIONS
-                        spdlog:header_only=False
-                BUILD missing
-                BUILD_TYPE ${CONAN_BUILD_TYPE}
-                )
+conan_cmake_run(REQUIRES catch2/2.13.3
+                         spdlog/1.8.0
+                SETTINGS compiler.cppstd=${CMAKE_CXX_STANDARD}
+                         os=${CMAKE_SYSTEM_NAME}
+                OPTIONS  spdlog:header_only=False
+                BUILD    missing
+                BUILD_TYPE ${CONAN_BUILD_TYPE})
 
 conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 

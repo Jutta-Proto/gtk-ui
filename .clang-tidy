@@ -24,7 +24,8 @@ Checks: '*,
 -cppcoreguidelines-owning-memory,
 -llvmlibc-implementation-in-namespace,
 -llvmlibc-callee-namespace,
--llvmlibc-restrict-system-libc-headers
+-llvmlibc-restrict-system-libc-headers,
+-fuchsia-multiple-inheritance
 '
 WarningsAsErrors: '*'
 HeaderFilterRegex: 'src/*.hpp'

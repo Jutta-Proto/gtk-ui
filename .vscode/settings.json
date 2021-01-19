@@ -93,7 +93,9 @@
     ],
     "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
     "clangd.arguments": [
-        "--clang-tidy"
+        "--clang-tidy",
+        "--compile-commands-dir",
+        "${workspaceFolder}"
     ],
     "git.detectSubmodules": false
 }

@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 set(MAIN_EXECUTABLE ${PROJECT_NAME})
 
 add_subdirectory(logger)
+add_subdirectory(ui)
+
 add_executable(${MAIN_EXECUTABLE} WIN32 main.cpp)
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows" AND NOT ${CMAKE_RC_COMPILER})
@@ -20,6 +22,6 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows" AND NOT ${CMAKE_RC_COMPILER})
     endif()
 endif()
 
-target_link_libraries(${MAIN_EXECUTABLE} PRIVATE logger)
+target_link_libraries(${MAIN_EXECUTABLE} PRIVATE logger ui)
 set_property(SOURCE main.cpp PROPERTY COMPILE_DEFINITIONS JUTTA_UI_VERSION="${PROJECT_VERSION}" JUTTA_UI_VERSION_NAME="${VERSION_NAME}")
 install(TARGETS ${MAIN_EXECUTABLE} RUNTIME DESTINATION)
