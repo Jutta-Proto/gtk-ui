@@ -88,7 +88,7 @@
         "unordered_set": "cpp"
     },
     "cmake.configureArgs": [
-        "-DENABLE_LINTING=ON",
+        "-DENABLE_LINTING=OFF",
         "-DCMAKE_UNITY_BUILD=OFF"
     ],
     "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
