@@ -48,7 +48,6 @@ void MainWindow::prep_window() {
     stackSwitcher->set_stack(*stack);
     // stackSwitcher->get_first_child()->get_first_child()->add_css_class("suggested-action");
     headerBar->set_title_widget(*stackSwitcher);
-
     set_titlebar(*headerBar);
 
     // CSS Style:

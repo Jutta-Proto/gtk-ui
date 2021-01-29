@@ -1,22 +1,30 @@
 .coffee-button {
     border-radius: 0;
     border-width: 0px;
-    background-color: @list_box_bg;
+    background-color: alpha(@content_view_bg, 0.70);
     box-shadow: 4px 4px 7px 0px rgba(50, 50, 50, 0.40);
-}
-
-.coffee-button-background {
-    background-image: url("resource:///ui/coffee.png");
     background-size: contain;
     background-repeat: no-repeat;
     background-origin: content-box;
 }
 
+.coffee-button:hover {
+    background-color: alpha(@content_view_bg, 0.90);
+}
+
+.coffee-button:active {
+    background-color: @content_view_bg;
+}
+
+.coffee-button-coffee-background {
+    background-image: url("resource:///ui/coffee.png");
+}
+
+.coffee-button-espresso-background {
+    background-image: url("resource:///ui/espresso.png");
+}
+
 .coffee-beans-background {
     background-image: url("resource:///ui/background.jpg");
     background-size: cover;
-}
-
-.coffee-button:hover {
-    background-color: @content_view_bg;
 }
