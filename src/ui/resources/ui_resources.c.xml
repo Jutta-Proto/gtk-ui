@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/ui/">
+    <file>background.jpg</file>
+    <file>coffee.png</file>
+    <file>theme.css</file>
+  </gresource>
+</gresources>

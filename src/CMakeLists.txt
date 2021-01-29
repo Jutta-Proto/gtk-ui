@@ -5,7 +5,14 @@ set(MAIN_EXECUTABLE ${PROJECT_NAME})
 add_subdirectory(logger)
 add_subdirectory(ui)
 
-add_executable(${MAIN_EXECUTABLE} WIN32 main.cpp)
+glib_add_resource_file(TARGET ui_resources
+                       RESOURCEDEF ${RESOURCE_DEF}
+                       WORKING_DIR ${RESOURCE_DIR}
+                       OUTFILE ui_resources.c
+                       DEPENDS ${RESOURCE_DEPS}
+                       )
+
+add_executable(${MAIN_EXECUTABLE} WIN32 main.cpp ${CMAKE_CURRENT_BINARY_DIR}/ui_resources.c)
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows" AND NOT ${CMAKE_RC_COMPILER})
     if (CMAKE_RC_COMPILER)

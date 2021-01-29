@@ -18,10 +18,6 @@ include(sanitizer)
 include(gcc_analyze)
 include(glib-resource-compiler)
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/credentials.cmake)
-    include(${CMAKE_SOURCE_DIR}/credentials.cmake)
-endif()
-
 if (${ENABLE_LINTING})
     message(STATUS "Enabling linting")
     include(clang-tidy)

@@ -4,6 +4,9 @@
 
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
+ private:
+    Gtk::MenuButton* viewMoreBtn;
+
  public:
     MainWindow();
 
@@ -13,6 +16,6 @@ class MainWindow : public Gtk::Window {
     static void prep_advanced(Gtk::Stack* stack);
 
     //-----------------------------Events:-----------------------------
-    void on_more_clicked();
+    void on_inspector_clicked();
 };
 }  // namespace ui::windows
