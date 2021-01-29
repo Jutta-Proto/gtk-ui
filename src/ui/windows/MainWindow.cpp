@@ -1,5 +1,6 @@
 #include "MainWindow.hpp"
 #include "ui/widgets/CoffeeSelection.hpp"
+#include "ui/widgets/CustomCoffee.hpp"
 #include <gdkmm/display.h>
 #include <giomm/resource.h>
 #include <gtk/gtk.h>
@@ -61,19 +62,20 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     box->set_halign(Gtk::Align::FILL);
     box->set_valign(Gtk::Align::FILL);
     box->set_vexpand(true);
-    box->set_homogeneous();
+    box->set_homogeneous(false);
+
+    // Predefined coffee:
     widgets::CoffeeSelection* coffeeSelection = Gtk::make_managed<widgets::CoffeeSelection>();
+    coffeeSelection->set_vexpand(true);
     box->append(*coffeeSelection);
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
     box->get_style_context()->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     box->add_css_class("coffee-beans-background");
-    /*Gtk::Frame* frame = Gtk::make_managed<Gtk::Frame>();
-    widgets::CoffeeSelection* coffeeSelection = Gtk::make_managed<widgets::CoffeeSelection>();
-    frame->set_child(*coffeeSelection);
-    frame->set_halign(Gtk::Align::CENTER);
-    frame->set_valign(Gtk::Align::CENTER);
-    box->append(*frame);*/
+
+    // Custom coffee:
+    widgets::CustomCoffee* customCoffee = Gtk::make_managed<widgets::CustomCoffee>();
+    box->append(*customCoffee);
     stack->add(*box, "overview", "Overview");
 }
 

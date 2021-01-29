@@ -1,13 +1,12 @@
 #pragma once
 
 #include <gtkmm.h>
-#include <gtkmm/flowbox.h>
-#include <gtkmm/flowboxchild.h>
+#include <gtkmm/frame.h>
 
 namespace ui::widgets {
-class CoffeeSelection : public Gtk::FlowBox {
+class CustomCoffee : public Gtk::Box {
  public:
-    CoffeeSelection();
+    CustomCoffee();
 
  private:
     void prep_widget();

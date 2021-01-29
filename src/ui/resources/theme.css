@@ -28,3 +28,22 @@
     background-image: url("resource:///ui/background.jpg");
     background-size: cover;
 }
+
+.custom-coffee-box {
+    background-color: alpha(@content_view_bg, 0.50);
+}
+
+.brew-button {
+    border-radius: 0;
+    border-width: 0px;
+    background-color: alpha(@content_view_bg, 0.70);
+    box-shadow: 4px 4px 7px 0px rgba(50, 50, 50, 0.40);
+}
+
+.brew-button:hover {
+    background-color: alpha(@content_view_bg, 0.90);
+}
+
+.brew-button:active {
+    background-color: @content_view_bg;
+}
