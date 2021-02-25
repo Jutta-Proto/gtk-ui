@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.16)
+
+set(PROJECT_DESCRIPTION "An unofficial UI to control JURA coffee makers.")
+
 project("Jutta_UI" 
             VERSION 0.0.0
-            DESCRIPTION "An unofficial UI to control JURA coffee makers."
-            HOMEPAGE_URL www.paper-search.com)
+            DESCRIPTION "${PROJECT_DESCRIPTION}"
+            HOMEPAGE_URL "https://github.com/Jutta-Proto/gtk4-ui")
 set(VERSION_NAME "dev")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -102,13 +105,13 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     install(DIRECTORY ${MINGW_ROOT}/bin/ DESTINATION bin
             FILES_MATCHING PATTERN "*.dll")
     install(FILES ${MINGW_ROOT}/bin/gdbus.exe DESTINATION bin)
-    install(DIRECTORY ${CMAKE_INSTALL_LIBDIR}/gdk-pixbuf-2.0 DESTINATION lib/)
-    install(DIRECTORY ${CMAKE_INSTALL_LIBDIR}/gtk-3.0 DESTINATION lib/)
-    install(FILES ${SHARE_INSTALL_PREFIX}/glib-2.0/schemas/gschemas.compiled DESTINATION share/glib-2.0/schemas/)
-    install(DIRECTORY ${SHARE_INSTALL_PREFIX}/icons/Adwaita DESTINATION share/icons)
+    install(DIRECTORY ${CMAKE_INSTALL_LIBDIR}/gdk-pixbuf-2.0 DESTINATION lib/) # TODO: Update for GTK4
+    install(DIRECTORY ${CMAKE_INSTALL_LIBDIR}/gtk-4.0 DESTINATION lib/)
+    install(FILES ${SHARE_INSTALL_PREFIX}/glib-2.0/schemas/gschemas.compiled DESTINATION share/glib-2.0/schemas/) # TODO: Update for GTK4
+    install(DIRECTORY ${SHARE_INSTALL_PREFIX}/icons/Adwaita DESTINATION share/icons) # TODO: Update for GTK4
 endif()
 
-set(CPACK_PACKAGE_DESCRIPTION "An unofficial UI to control JURA coffee makers.")
+set(CPACK_PACKAGE_DESCRIPTION "${PROJECT_DESCRIPTION}")
 set(CPACK_PACKAGE_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}")
 set(CPACK_PACKAGE_VERSION_MINOR "${PROJECT_VERSION_MINOR}")
 set(CPACK_PACKAGE_VERSION_PATCH "${PROJECT_VERSION_PATCH}")
@@ -127,7 +130,7 @@ include (CPack)
 if(${BUILD_TESTING})
     message(STATUS "Testing is enabled")
     enable_testing()
-    add_subdirectory(test)
+    add_subdirectory(tests)
 else()
     message(STATUS "Testing is disabled")
 endif()
