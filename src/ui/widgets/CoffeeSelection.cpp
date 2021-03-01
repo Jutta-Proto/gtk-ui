@@ -29,7 +29,7 @@ void CoffeeSelection::prep_widget() {
 Gtk::FlowBoxChild& CoffeeSelection::generate_button(const std::string& name, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) {
     Gtk::FlowBoxChild* child = Gtk::make_managed<Gtk::FlowBoxChild>();
     Gtk::Button* btn = Gtk::make_managed<Gtk::Button>(name);
-    btn->set_size_request(150, 150);
+    btn->set_size_request(100, 100);
     btn->get_style_context()->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
     btn->add_css_class("coffee-button");
     btn->add_css_class(cssClass);
