@@ -20,6 +20,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(sanitizer)
 include(gcc_analyze)
 include(glib-resource-compiler)
+include(FetchContent)
 
 if (${ENABLE_LINTING})
     message(STATUS "Enabling linting")
@@ -76,6 +77,12 @@ conan_cmake_run(REQUIRES catch2/2.13.3
                 OPTIONS  spdlog:header_only=False
                 BUILD    missing
                 BUILD_TYPE ${CONAN_BUILD_TYPE})
+
+FetchContent_Declare(jutta_proto
+                     GIT_REPOSITORY         https://github.com/Jutta-Proto/protocol-cpp.git
+                     GIT_TAG main
+                     USES_TERMINAL_DOWNLOAD TRUE)   # <---- This is needed only for Ninja to show download progress
+FetchContent_MakeAvailable(jutta_proto)
 
 conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
 
