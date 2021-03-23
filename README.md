@@ -1,5 +1,5 @@
 # UI
-A `C++20` and [GTK 4](https://blog.gtk.org/2020/12/16/gtk-4-0/) based implementation for the jutta coffee maker UI to control JURA coffee makers.
+A `C++20` and [GTK 3](https://www.gtk.org/) based implementation for the jutta coffee maker UI to control JURA coffee makers.
 The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-cpp).
 
 ## Example
@@ -7,8 +7,8 @@ The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-cp
 
 ## Building
 ```bash
-$ git clone https://github.com/Jutta-Proto/gtk4-ui.git
-$ cd gtk4-ui
+$ git clone https://github.com/Jutta-Proto/gtk-ui.git
+$ cd gtk-ui
 $ mkdir build
 $ cd build
 $ cmake ..
