@@ -49,11 +49,11 @@ else ()
     endforeach()  
 endif()
 
-# gtk4 stuff
+# gtk3 stuff
 find_package(PkgConfig REQUIRED)
-# Additional search path since gtkmm-4.0 will usually be installed in /usr
+# Additional search path since gtkmm-3.0 will usually be installed in /usr
 set(ENV{PKG_CONFIG_PATH} "/usr/lib/pkgconfig")
-pkg_check_modules(GTKMM gtkmm-4.0 REQUIRED IMPORTED_TARGET)
+pkg_check_modules(GTKMM gtkmm-3.0>=3.22 REQUIRED IMPORTED_TARGET)
 
 if (NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")

@@ -5,7 +5,7 @@
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
  private:
-    Gtk::MenuButton* viewMoreBtn;
+    Gtk::MenuButton* viewMoreBtn{nullptr};
 
  public:
     MainWindow();

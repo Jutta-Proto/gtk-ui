@@ -24,69 +24,72 @@ void MainWindow::prep_window() {
     Gtk::Stack* stack = Gtk::make_managed<Gtk::Stack>();
     prep_overview(stack);
     prep_advanced(stack);
-    set_child(*stack);
+    add(*stack);
 
     // Header bar:
     Gtk::HeaderBar* headerBar = Gtk::make_managed<Gtk::HeaderBar>();
     viewMoreBtn = Gtk::make_managed<Gtk::MenuButton>();
-    viewMoreBtn->set_icon_name("open-menu");
+    viewMoreBtn->set_image_from_icon_name("open-menu");
     Gtk::PopoverMenu* viewMorePopover = Gtk::make_managed<Gtk::PopoverMenu>();
     Gtk::Stack* viewMoreMenuStack = Gtk::make_managed<Gtk::Stack>();
-    Gtk::Box* viewMoreMenuBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
+    Gtk::Box* viewMoreMenuBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
     Gtk::Button* settingsBtn = Gtk::make_managed<Gtk::Button>("Settings");
-    viewMoreMenuBox->append(*settingsBtn);
+    viewMoreMenuBox->add(*settingsBtn);
     Gtk::Button* inspectorBtn = Gtk::make_managed<Gtk::Button>("Inspector");
     inspectorBtn->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_inspector_clicked));
-    viewMoreMenuBox->append(*inspectorBtn);
+    viewMoreMenuBox->add(*inspectorBtn);
     Gtk::Button* aboutBtn = Gtk::make_managed<Gtk::Button>("About");
-    viewMoreMenuBox->append(*aboutBtn);
+    viewMoreMenuBox->add(*aboutBtn);
     viewMoreMenuStack->add(*viewMoreMenuBox, "main");
-    viewMorePopover->set_child(*viewMoreMenuStack);
+    viewMorePopover->add(*viewMoreMenuStack);
     viewMoreBtn->set_popover(*viewMorePopover);
     headerBar->pack_end(*viewMoreBtn);
 
     Gtk::StackSwitcher* stackSwitcher = Gtk::make_managed<Gtk::StackSwitcher>();
     stackSwitcher->set_stack(*stack);
     // stackSwitcher->get_first_child()->get_first_child()->add_css_class("suggested-action");
-    headerBar->set_title_widget(*stackSwitcher);
+    headerBar->set_custom_title(*stackSwitcher);
     set_titlebar(*headerBar);
 
     // CSS Style:
     /*Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     cssProvider->load_from_file(Gio::File::create_for_path("theme.css"));
     get_style_context()->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);*/
+
+    show_all();
 }
 
 void MainWindow::prep_overview(Gtk::Stack* stack) {
-    Gtk::Box* box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL);
-    box->set_halign(Gtk::Align::FILL);
-    box->set_valign(Gtk::Align::FILL);
+    Gtk::Box* box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    box->set_halign(Gtk::Align::ALIGN_FILL);
+    box->set_valign(Gtk::Align::ALIGN_FILL);
     box->set_vexpand(true);
     box->set_homogeneous(false);
 
     // Predefined coffee:
     widgets::CoffeeSelection* coffeeSelection = Gtk::make_managed<widgets::CoffeeSelection>();
     coffeeSelection->set_vexpand(true);
-    box->append(*coffeeSelection);
+    box->add(*coffeeSelection);
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
-    box->get_style_context()->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-    box->add_css_class("coffee-beans-background");
+    Glib::RefPtr<Gtk::StyleContext> styleCtx = box->get_style_context();
+    styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    styleCtx->add_class("coffee-beans-background");
 
     // Custom coffee:
     widgets::CustomCoffee* customCoffee = Gtk::make_managed<widgets::CustomCoffee>();
-    box->append(*customCoffee);
+    box->add(*customCoffee);
     stack->add(*box, "overview", "Overview");
 }
 
 void MainWindow::prep_advanced(Gtk::Stack* stack) {
-    Gtk::Box* box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::VERTICAL, 0);
+    Gtk::Box* box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL, 0);
     stack->add(*box, "advanced", "Advanced");
 }
 
 //-----------------------------Events:-----------------------------
 void MainWindow::on_inspector_clicked() {
-    viewMoreBtn->popdown();
+    viewMoreBtn->get_popover()->popdown();
     gtk_window_set_interactive_debugging(true);
 }
 }  // namespace ui::windows
