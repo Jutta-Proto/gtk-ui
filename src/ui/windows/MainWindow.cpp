@@ -41,6 +41,7 @@ void MainWindow::prep_window() {
     Gtk::Button* aboutBtn = Gtk::make_managed<Gtk::Button>("About");
     viewMoreMenuBox->add(*aboutBtn);
     viewMoreMenuStack->add(*viewMoreMenuBox, "main");
+    viewMoreMenuStack->show_all();
     viewMorePopover->add(*viewMoreMenuStack);
     viewMoreBtn->set_popover(*viewMorePopover);
     headerBar->pack_end(*viewMoreBtn);
