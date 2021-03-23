@@ -28,7 +28,7 @@ void CoffeeSelection::prep_widget() {
 
 Gtk::Button& CoffeeSelection::generate_button(const std::string& name, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) {
     Gtk::Button* btn = Gtk::make_managed<Gtk::Button>(name);
-    btn->set_size_request(100, 100);
+    btn->set_size_request(100, 50);
     Glib::RefPtr<Gtk::StyleContext> styleCtx = btn->get_style_context();
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
     styleCtx->add_class("coffee-button");
