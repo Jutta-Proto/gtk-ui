@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
 add_subdirectory(widgets)
-add_subdirectory(dialogs)
 add_subdirectory(windows)
 add_subdirectory(resources)
 

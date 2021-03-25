@@ -3,11 +3,11 @@
 #include "backend/CoffeeMakerDetection.hpp"
 #include <optional>
 #include <gtkmm.h>
+#include <gtkmm/box.h>
 #include <gtkmm/button.h>
-#include <gtkmm/dialog.h>
 
-namespace ui::dialogs {
-class DetectCoffeeMakerDialog : public Gtk::Dialog {
+namespace ui::widgets {
+class CoffeeMakerDetectionWidget : public Gtk::Box {
  private:
     Gtk::Button* actionBtn{nullptr};
     Gtk::Entry* serialPort{nullptr};
@@ -17,14 +17,14 @@ class DetectCoffeeMakerDialog : public Gtk::Dialog {
     std::optional<backend::CoffeeMakerDetection> detection{std::nullopt};
 
  public:
-    DetectCoffeeMakerDialog();
+    CoffeeMakerDetectionWidget();
 
  private:
-    void prep_dialog();
+    void prep_widget();
     void start_detecting();
     void stop_detecting();
 
     //-----------------------------Events:-----------------------------
     void on_action_btn_click();
 };
-}  // namespace ui::dialogs
+}  // namespace ui::widgets

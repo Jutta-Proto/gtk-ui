@@ -1,7 +1,6 @@
 #include "MainWindow.hpp"
 #include "ui/widgets/CoffeeSelection.hpp"
 #include "ui/widgets/CustomCoffee.hpp"
-#include <ui/dialogs/DetectCoffeeMakerDialog.hpp>
 #include <gdkmm/display.h>
 #include <giomm/resource.h>
 #include <gtk/gtk.h>
@@ -64,37 +63,46 @@ void MainWindow::prep_window() {
 }
 
 void MainWindow::prep_overview(Gtk::Stack* stack) {
-    Gtk::Box* box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    box->set_halign(Gtk::Align::ALIGN_FILL);
-    box->set_valign(Gtk::Align::ALIGN_FILL);
-    box->set_vexpand(true);
-    box->set_homogeneous(false);
+    stack->add(mainOverlay, "overview", "Overview");
+
+    Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    mainOverlay.add(*mainBox);
+    mainBox->set_halign(Gtk::Align::ALIGN_FILL);
+    mainBox->set_valign(Gtk::Align::ALIGN_FILL);
+    mainBox->set_vexpand(true);
+    mainBox->set_homogeneous(false);
 
     // Predefined coffee:
     widgets::CoffeeSelection* coffeeSelection = Gtk::make_managed<widgets::CoffeeSelection>();
     coffeeSelection->set_vexpand(true);
-    box->add(*coffeeSelection);
+    mainBox->add(*coffeeSelection);
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
-    Glib::RefPtr<Gtk::StyleContext> styleCtx = box->get_style_context();
+    Glib::RefPtr<Gtk::StyleContext> styleCtx = mainBox->get_style_context();
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     styleCtx->add_class("coffee-beans-background");
 
     // Custom coffee:
     widgets::CustomCoffee* customCoffee = Gtk::make_managed<widgets::CustomCoffee>();
-    box->add(*customCoffee);
-    stack->add(*box, "overview", "Overview");
+    mainBox->add(*customCoffee);
+
+    // Overlay:
+    mainOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    mainOverlay.add_overlay(*mainOverlayBox);
+    mainOverlayBox->hide();
+    Glib::RefPtr<Gtk::StyleContext> overlayStyleCtx = mainOverlayBox->get_style_context();
+    overlayStyleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    overlayStyleCtx->add_class("overlay-background");
 }
 
 void MainWindow::prep_advanced(Gtk::Stack* stack) {
-    Gtk::Box* box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL, 0);
-    stack->add(*box, "advanced", "Advanced");
+    Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL, 0);
+    stack->add(*mainBox, "advanced", "Advanced");
 }
 
 void MainWindow::detect_coffee_maker() {
-    dialogs::DetectCoffeeMakerDialog dialog{};
-    dialog.show_all();
-    dialog.run();
+    mainOverlayBox->add(coffeeMakerDetection);
+    mainOverlayBox->show_all();
 }
 
 //-----------------------------Events:-----------------------------

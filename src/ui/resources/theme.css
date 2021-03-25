@@ -47,3 +47,7 @@
 .brew-button:active {
     background-color: @content_view_bg;
 }
+
+.overlay-background {
+    background-color: alpha(@content_view_bg, 0.80);
+}
