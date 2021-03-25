@@ -4,9 +4,9 @@
 #include <gtkmm/flowbox.h>
 
 namespace ui::widgets {
-class CoffeeSelection : public Gtk::FlowBox {
+class CoffeeSelectionWidget : public Gtk::FlowBox {
  public:
-    CoffeeSelection();
+    CoffeeSelectionWidget();
 
  private:
     void prep_widget();

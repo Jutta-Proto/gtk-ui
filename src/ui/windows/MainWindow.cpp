@@ -1,6 +1,6 @@
 #include "MainWindow.hpp"
-#include "ui/widgets/CoffeeSelection.hpp"
-#include "ui/widgets/CustomCoffee.hpp"
+#include "ui/widgets/CoffeeSelectionWidget.hpp"
+#include "ui/widgets/CustomCoffeeWidget.hpp"
 #include <memory>
 #include <gdkmm/display.h>
 #include <giomm/resource.h>
@@ -68,9 +68,9 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     mainBox->set_homogeneous(false);
 
     // Predefined coffee:
-    widgets::CoffeeSelection* coffeeSelection = Gtk::make_managed<widgets::CoffeeSelection>();
-    coffeeSelection->set_vexpand(true);
-    mainBox->add(*coffeeSelection);
+    widgets::CoffeeSelectionWidget* CoffeeSelectionWidget = Gtk::make_managed<widgets::CoffeeSelectionWidget>();
+    CoffeeSelectionWidget->set_vexpand(true);
+    mainBox->add(*CoffeeSelectionWidget);
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
     Glib::RefPtr<Gtk::StyleContext> styleCtx = mainBox->get_style_context();
@@ -78,8 +78,8 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     styleCtx->add_class("coffee-beans-background");
 
     // Custom coffee:
-    widgets::CustomCoffee* customCoffee = Gtk::make_managed<widgets::CustomCoffee>();
-    mainBox->add(*customCoffee);
+    widgets::CustomCoffeeWidget* CustomCoffeeWidget = Gtk::make_managed<widgets::CustomCoffeeWidget>();
+    mainBox->add(*CustomCoffeeWidget);
 
     // Overlay:
     mainOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);

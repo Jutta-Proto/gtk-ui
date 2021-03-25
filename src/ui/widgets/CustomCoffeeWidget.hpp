@@ -4,9 +4,9 @@
 #include <gtkmm/frame.h>
 
 namespace ui::widgets {
-class CustomCoffee : public Gtk::Box {
+class CustomCoffeeWidget : public Gtk::Box {
  public:
-    CustomCoffee();
+    CustomCoffeeWidget();
 
  private:
     void prep_widget();

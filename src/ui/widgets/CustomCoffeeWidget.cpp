@@ -1,15 +1,15 @@
-#include "CustomCoffee.hpp"
+#include "CustomCoffeeWidget.hpp"
 #include <gtkmm/adjustment.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/scale.h>
 
 namespace ui::widgets {
-CustomCoffee::CustomCoffee() : Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
+CustomCoffeeWidget::CustomCoffeeWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
     prep_widget();
 }
 
-void CustomCoffee::prep_widget() {
+void CustomCoffeeWidget::prep_widget() {
     // Style:
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));

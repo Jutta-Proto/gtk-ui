@@ -1,14 +1,14 @@
-#include "CoffeeSelection.hpp"
+#include "CoffeeSelectionWidget.hpp"
 #include <giomm/file.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
 
 namespace ui::widgets {
-CoffeeSelection::CoffeeSelection() {
+CoffeeSelectionWidget::CoffeeSelectionWidget() {
     prep_widget();
 }
 
-void CoffeeSelection::prep_widget() {
+void CoffeeSelectionWidget::prep_widget() {
     set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
 
     // Style:
@@ -26,7 +26,7 @@ void CoffeeSelection::prep_widget() {
     this->add(generate_button("Macciato", "coffee-button-coffee-background", cssProvider));
 }
 
-Gtk::Button& CoffeeSelection::generate_button(const std::string& name, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) {
+Gtk::Button& CoffeeSelectionWidget::generate_button(const std::string& name, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) {
     Gtk::Button* btn = Gtk::make_managed<Gtk::Button>(name);
     btn->set_size_request(100, 50);
     Glib::RefPtr<Gtk::StyleContext> styleCtx = btn->get_style_context();
