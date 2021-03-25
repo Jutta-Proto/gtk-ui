@@ -49,14 +49,8 @@ void MainWindow::prep_window() {
 
     Gtk::StackSwitcher* stackSwitcher = Gtk::make_managed<Gtk::StackSwitcher>();
     stackSwitcher->set_stack(*stack);
-    // stackSwitcher->get_first_child()->get_first_child()->add_css_class("suggested-action");
     headerBar->set_custom_title(*stackSwitcher);
     set_titlebar(*headerBar);
-
-    // CSS Style:
-    /*Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
-    cssProvider->load_from_file(Gio::File::create_for_path("theme.css"));
-    get_style_context()->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);*/
 
     show_all();
 
@@ -112,7 +106,7 @@ void MainWindow::on_inspector_clicked() {
     gtk_window_set_interactive_debugging(true);
 }
 
-void MainWindow::on_signal_detection_successfull(std::shared_ptr<jutta_proto::CoffeeMaker> coffeeMaker) {
+void MainWindow::on_signal_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
     this->coffeeMaker = std::move(coffeeMaker);
     mainOverlayBox->hide();
 }

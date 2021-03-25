@@ -71,7 +71,7 @@ void CoffeeMakerDetection::run() {
                 if (resultRead.starts_with("ty:") && resultRead.ends_with("\r\n")) {
                     if (state == CoffeeMakerDetectionState::RUNNING) {
                         // Remove 'ty:' and '\r\n':
-                        std::string version = resultRead.substr(3, resultRead.length() - 3 - 2);
+                        version = resultRead.substr(3, resultRead.length() - 3 - 2);
                         SPDLOG_INFO("Successfully found the coffee maker: {}", version);
                         set_state(CoffeeMakerDetectionState::SUCCESS);
                         return;
@@ -101,6 +101,10 @@ std::unique_ptr<jutta_proto::JuttaConnection>&& CoffeeMakerDetection::get_connec
 
 const std::string& CoffeeMakerDetection::get_last_error() const {
     return lastError;
+}
+
+const std::string& CoffeeMakerDetection::get_version() const {
+    return version;
 }
 
 CoffeeMakerDetection::type_signal_state_changed CoffeeMakerDetection::signal_state_changed() {

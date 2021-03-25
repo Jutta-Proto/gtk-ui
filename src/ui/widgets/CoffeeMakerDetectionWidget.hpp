@@ -1,6 +1,7 @@
 #pragma once
 
 #include "backend/CoffeeMakerDetection.hpp"
+#include "backend/CoffeeMakerWrapper.hpp"
 #include <jutta_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <gtkmm.h>
@@ -21,7 +22,7 @@ class CoffeeMakerDetectionWidget : public Gtk::Frame {
 
     std::unique_ptr<backend::CoffeeMakerDetection> detection{nullptr};
 
-    using type_signal_detection_successfull = sigc::signal<void, std::shared_ptr<jutta_proto::CoffeeMaker>>;
+    using type_signal_detection_successfull = sigc::signal<void, std::shared_ptr<backend::CoffeeMakerWrapper>>;
     type_signal_detection_successfull m_signal_detection_successfull;
 
  public:

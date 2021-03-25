@@ -28,6 +28,7 @@ class CoffeeMakerDetection {
     std::optional<std::thread> mainThread;
     std::string lastError{};
     std::unique_ptr<jutta_proto::JuttaConnection> connection;
+    std::string version{};
 
  public:
     explicit CoffeeMakerDetection(std::string&& device);
@@ -39,6 +40,7 @@ class CoffeeMakerDetection {
     [[nodiscard]] CoffeeMakerDetectionState get_state() const;
     std::unique_ptr<jutta_proto::JuttaConnection>&& get_connection();
     [[nodiscard]] const std::string& get_last_error() const;
+    [[nodiscard]] const std::string& get_version() const;
     type_signal_state_changed signal_state_changed();
 
  private:

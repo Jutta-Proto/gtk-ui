@@ -116,7 +116,7 @@ void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::Coffe
             actionBtn->set_label("Success!");
             actionSpinner->stop();
             // Emit the signal handler:
-            m_signal_detection_successfull.emit(std::make_shared<jutta_proto::CoffeeMaker>(detection->get_connection()));
+            m_signal_detection_successfull.emit(std::make_shared<backend::CoffeeMakerWrapper>(std::string(detection->get_version()), detection->get_connection()));
             break;
 
         case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::ERROR:

@@ -1,9 +1,10 @@
 #pragma once
 
+#include "backend/CoffeeMakerWrapper.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
 #include <jutta_proto/CoffeeMaker.hpp>
-#include <gtkmm.h>
 #include <memory>
+#include <gtkmm.h>
 
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
@@ -13,7 +14,7 @@ class MainWindow : public Gtk::Window {
     Gtk::Box* mainOverlayBox{nullptr};
     widgets::CoffeeMakerDetectionWidget coffeeMakerDetection{};
 
-    std::shared_ptr<jutta_proto::CoffeeMaker> coffeeMaker{nullptr};
+    std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
 
  public:
     MainWindow();
@@ -26,6 +27,6 @@ class MainWindow : public Gtk::Window {
 
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
-    void on_signal_detection_successfull(std::shared_ptr<jutta_proto::CoffeeMaker> coffeeMaker);
+    void on_signal_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker);
 };
 }  // namespace ui::windows
