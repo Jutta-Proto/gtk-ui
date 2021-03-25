@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 set(MAIN_EXECUTABLE ${PROJECT_NAME})
 
+add_subdirectory(backend)
 add_subdirectory(ui)
 
 glib_add_resource_file(TARGET ui_resources

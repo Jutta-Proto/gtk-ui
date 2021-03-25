@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui/widgets/CoffeeSelection.hpp"
 #include "ui/widgets/CustomCoffee.hpp"
+#include <ui/dialogs/DetectCoffeeMakerDialog.hpp>
 #include <gdkmm/display.h>
 #include <giomm/resource.h>
 #include <gtk/gtk.h>
@@ -58,6 +59,8 @@ void MainWindow::prep_window() {
     get_style_context()->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);*/
 
     show_all();
+
+    detect_coffee_maker();
 }
 
 void MainWindow::prep_overview(Gtk::Stack* stack) {
@@ -86,6 +89,12 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
 void MainWindow::prep_advanced(Gtk::Stack* stack) {
     Gtk::Box* box = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL, 0);
     stack->add(*box, "advanced", "Advanced");
+}
+
+void MainWindow::detect_coffee_maker() {
+    dialogs::DetectCoffeeMakerDialog dialog{};
+    dialog.show_all();
+    dialog.run();
 }
 
 //-----------------------------Events:-----------------------------

@@ -14,6 +14,7 @@ class MainWindow : public Gtk::Window {
     void prep_window();
     static void prep_overview(Gtk::Stack* stack);
     static void prep_advanced(Gtk::Stack* stack);
+    static void detect_coffee_maker();
 
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
