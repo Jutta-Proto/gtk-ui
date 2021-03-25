@@ -76,6 +76,8 @@ void CoffeeMakerDetection::run() {
                         set_state(CoffeeMakerDetectionState::SUCCESS);
                         return;
                     }
+                } else {
+                    SPDLOG_DEBUG("Invalid string read: '{}' with starts_with: '{}', ends_with: '{}'", resultRead, resultRead.starts_with("ty:"), resultRead.ends_with("\r\n"));
                 }
                 readBuffer.clear();
             }
