@@ -11,6 +11,7 @@
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
  private:
+    bool inFullScreen{false};
     Gtk::MenuButton* viewMoreBtn{nullptr};
     Gtk::Overlay mainOverlay{};
     Gtk::Box* mainOverlayBox{nullptr};
@@ -32,5 +33,8 @@ class MainWindow : public Gtk::Window {
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
     void on_signal_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker);
+    void on_full_screen_clicked();
+    bool on_key_pressed(GdkEventKey* event);
+    bool on_window_state_changed(GdkEventWindowState* state);
 };
 }  // namespace ui::windows

@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
 #include <memory>
+#include <gdk/gdkkeysyms.h>
 #include <gdkmm/display.h>
 #include <giomm/resource.h>
 #include <gtk/gtk.h>
@@ -20,6 +21,9 @@ MainWindow::MainWindow() {
 void MainWindow::prep_window() {
     set_title("Jutta Control");
     set_default_size(800, 550);
+    signal_key_press_event().connect(sigc::mem_fun(this, &MainWindow::on_key_pressed));
+    signal_window_state_event().connect(sigc::mem_fun(this, &MainWindow::on_window_state_changed));
+    fullscreen();
 
     // Content:
     Gtk::Stack* stack = Gtk::make_managed<Gtk::Stack>();
@@ -34,6 +38,9 @@ void MainWindow::prep_window() {
     Gtk::PopoverMenu* viewMorePopover = Gtk::make_managed<Gtk::PopoverMenu>();
     Gtk::Stack* viewMoreMenuStack = Gtk::make_managed<Gtk::Stack>();
     Gtk::Box* viewMoreMenuBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    Gtk::Button* fullscreenBtn = Gtk::make_managed<Gtk::Button>("Fullscreen");
+    fullscreenBtn->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_full_screen_clicked));
+    viewMoreMenuBox->add(*fullscreenBtn);
     Gtk::Button* settingsBtn = Gtk::make_managed<Gtk::Button>("Settings");
     viewMoreMenuBox->add(*settingsBtn);
     Gtk::Button* inspectorBtn = Gtk::make_managed<Gtk::Button>("Inspector");
@@ -113,5 +120,31 @@ void MainWindow::on_signal_detection_successfull(std::shared_ptr<backend::Coffee
     coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
     customCoffeeWidget.set_coffee_maker(this->coffeeMaker);
     mainOverlayBox->hide();
+}
+
+void MainWindow::on_full_screen_clicked() {
+    fullscreen();
+}
+
+bool MainWindow::on_key_pressed(GdkEventKey* event) {
+    if (event->keyval == GDK_KEY_Escape && inFullScreen) {
+        unfullscreen();
+        maximize();
+        return true;
+    } else if (event->keyval == GDK_KEY_F11) {
+        if (inFullScreen) {
+            unfullscreen();
+            maximize();
+        } else {
+            fullscreen();
+        }
+        return true;
+    }
+    return false;
+}
+
+bool MainWindow::on_window_state_changed(GdkEventWindowState* state) {
+    inFullScreen = state->new_window_state & GDK_WINDOW_STATE_FULLSCREEN;
+    return false;
 }
 }  // namespace ui::windows
