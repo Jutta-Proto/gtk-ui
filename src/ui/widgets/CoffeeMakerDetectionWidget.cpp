@@ -18,7 +18,7 @@
 #include <sigc++/functors/mem_fun.h>
 
 namespace ui::widgets {
-CoffeeMakerDetectionWidget::CoffeeMakerDetectionWidget() : Gtk::Frame() {
+CoffeeMakerDetectionWidget::CoffeeMakerDetectionWidget() {
     prep_widget();
 }
 
