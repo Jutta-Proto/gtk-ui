@@ -28,7 +28,6 @@ void CoffeeMakerDetection::set_state(CoffeeMakerDetectionState newState) {
 void CoffeeMakerDetection::start() {
     assert(!mainThread);
     SPDLOG_DEBUG("Starting coffee maker detection...");
-    set_state(CoffeeMakerDetectionState::NOT_RUNNING);
     mainThread = std::make_optional<std::thread>(&CoffeeMakerDetection::run, this);
 }
 
@@ -38,6 +37,7 @@ void CoffeeMakerDetection::stop() {
     set_state(CoffeeMakerDetectionState::CANCELD);
     mainThread->join();
     SPDLOG_DEBUG("Stoped coffee maker detection.");
+    set_state(CoffeeMakerDetectionState::NOT_RUNNING);
 }
 
 void CoffeeMakerDetection::run() {

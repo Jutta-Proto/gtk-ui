@@ -146,16 +146,24 @@ void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::Coffe
 
         case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::CANCELD:
             detecting = false;
-            serialPort->set_sensitive(true);
-            actionBtn->set_label("Detect");
-            actionBtn->set_sensitive(true);
-            actionSpinner->stop();
+            serialPort->set_sensitive(false);
+            actionBtn->set_label("Canceling...");
+            actionBtn->set_sensitive(false);
+            actionSpinner->start();
             break;
 
         case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::RUNNING:
             detecting = true;
             actionBtn->set_label("Cancel");
             actionBtn->set_sensitive(true);
+            break;
+
+        case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::NOT_RUNNING:
+            detecting = false;
+            serialPort->set_sensitive(true);
+            actionBtn->set_label("Detect");
+            actionBtn->set_sensitive(true);
+            actionSpinner->stop();
             break;
 
         default:
