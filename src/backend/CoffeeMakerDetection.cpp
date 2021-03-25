@@ -27,6 +27,7 @@ void CoffeeMakerDetection::set_state(CoffeeMakerDetectionState newState) {
 void CoffeeMakerDetection::start() {
     assert(!mainThread);
     SPDLOG_DEBUG("Starting coffee maker detection...");
+    set_state(CoffeeMakerDetectionState::NOT_RUNNING);
     mainThread = std::make_optional<std::thread>(&CoffeeMakerDetection::run, this);
 }
 
@@ -39,6 +40,7 @@ void CoffeeMakerDetection::stop() {
 }
 
 void CoffeeMakerDetection::run() {
+    set_state(CoffeeMakerDetectionState::RUNNING);
     SPDLOG_DEBUG("Coffee maker detection started.");
     try {
         connection->init();
@@ -46,6 +48,7 @@ void CoffeeMakerDetection::run() {
         lastError = std::string(ex.what());
         SPDLOG_ERROR("Failed to initialize the coffee maker connection with: {}", lastError);
         set_state(CoffeeMakerDetectionState::ERROR);
+        return;
     }
 
     std::vector<uint8_t> readBuffer{};
