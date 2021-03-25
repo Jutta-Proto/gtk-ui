@@ -63,9 +63,8 @@ void CoffeeMakerDetection::run() {
 
             // Read:
             if (!connection->read_decoded(readBuffer)) {
-                SPDLOG_WARN("Failed to read from coffee maker to get type.");
+                SPDLOG_TRACE("Nothing to read from the coffee maker.");
                 continue;
-                ;
             }
             if (!readBuffer.empty()) {
                 std::string resultRead = jutta_proto::JuttaConnection::vec_to_string(readBuffer);
