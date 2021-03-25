@@ -1,6 +1,4 @@
 #include "MainWindow.hpp"
-#include "ui/widgets/CoffeeSelectionWidget.hpp"
-#include "ui/widgets/CustomCoffeeWidget.hpp"
 #include <memory>
 #include <gdkmm/display.h>
 #include <giomm/resource.h>
@@ -68,9 +66,8 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     mainBox->set_homogeneous(false);
 
     // Predefined coffee:
-    widgets::CoffeeSelectionWidget* CoffeeSelectionWidget = Gtk::make_managed<widgets::CoffeeSelectionWidget>();
-    CoffeeSelectionWidget->set_vexpand(true);
-    mainBox->add(*CoffeeSelectionWidget);
+    coffeeSelectionWidget.set_vexpand(true);
+    mainBox->add(coffeeSelectionWidget);
     Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
     cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
     Glib::RefPtr<Gtk::StyleContext> styleCtx = mainBox->get_style_context();
@@ -78,8 +75,7 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     styleCtx->add_class("coffee-beans-background");
 
     // Custom coffee:
-    widgets::CustomCoffeeWidget* CustomCoffeeWidget = Gtk::make_managed<widgets::CustomCoffeeWidget>();
-    mainBox->add(*CustomCoffeeWidget);
+    mainBox->add(customCoffeeWidget);
 
     // Overlay:
     mainOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
@@ -96,7 +92,7 @@ void MainWindow::prep_advanced(Gtk::Stack* stack) {
 }
 
 void MainWindow::detect_coffee_maker() {
-    mainOverlayBox->add(coffeeMakerDetection);
+    mainOverlayBox->add(coffeeMakerDetectionWidget);
     mainOverlayBox->show_all();
 }
 
@@ -108,6 +104,8 @@ void MainWindow::on_inspector_clicked() {
 
 void MainWindow::on_signal_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
     this->coffeeMaker = std::move(coffeeMaker);
+    coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
+    customCoffeeWidget.set_coffee_maker(this->coffeeMaker);
     mainOverlayBox->hide();
 }
 }  // namespace ui::windows

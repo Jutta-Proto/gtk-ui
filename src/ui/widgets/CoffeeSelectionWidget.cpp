@@ -1,7 +1,8 @@
 #include "CoffeeSelectionWidget.hpp"
 #include <giomm/file.h>
-#include <gtkmm/button.h>
 #include <gtkmm/enums.h>
+#include <sigc++/functors/mem_fun.h>
+#include <cassert>
 
 namespace ui::widgets {
 CoffeeSelectionWidget::CoffeeSelectionWidget() {
@@ -16,27 +17,29 @@ void CoffeeSelectionWidget::prep_widget() {
     cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
 
     // Add content:
-    this->add(generate_button("Coffee", "coffee-button-coffee-background", cssProvider));
-    this->add(generate_button("Espresso", "coffee-button-espresso-background", cssProvider));
-    this->add(generate_button("Cappuccino", "coffee-button-coffee-background", cssProvider));
-    this->add(generate_button("Milk foam", "coffee-button-coffee-background", cssProvider));
-    this->add(generate_button("Caffe Barista", "coffee-button-coffee-background", cssProvider));
-    this->add(generate_button("Lungo Barista", "coffee-button-coffee-background", cssProvider));
-    this->add(generate_button("Espresso doppio", "coffee-button-coffee-background", cssProvider));
-    this->add(generate_button("Macciato", "coffee-button-coffee-background", cssProvider));
+    this->add(generate_button("Coffee", jutta_proto::CoffeeMaker::coffee_t::COFFEE, "coffee-button-coffee-background", cssProvider));
+    this->add(generate_button("Espresso", jutta_proto::CoffeeMaker::coffee_t::ESPRESSO, "coffee-button-espresso-background", cssProvider));
+    this->add(generate_button("Cappuccino", jutta_proto::CoffeeMaker::coffee_t::CAPPUCCINO, "coffee-button-coffee-background", cssProvider));
+    this->add(generate_button("Milk foam", jutta_proto::CoffeeMaker::coffee_t::MILK_FOAM, "coffee-button-coffee-background", cssProvider));
+    this->add(generate_button("Caffe Barista", jutta_proto::CoffeeMaker::coffee_t::CAFFE_BARISTA, "coffee-button-coffee-background", cssProvider));
+    this->add(generate_button("Lungo Barista", jutta_proto::CoffeeMaker::coffee_t::LUNGO_BARISTA, "coffee-button-coffee-background", cssProvider));
+    this->add(generate_button("Espresso doppio", jutta_proto::CoffeeMaker::coffee_t::ESPRESSO_DOPPIO, "coffee-button-coffee-background", cssProvider));
+    this->add(generate_button("Macciato", jutta_proto::CoffeeMaker::coffee_t::MACCHIATO, "coffee-button-coffee-background", cssProvider));
 }
 
-Gtk::Button& CoffeeSelectionWidget::generate_button(const std::string& name, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) {
-    Gtk::Button* btn = Gtk::make_managed<Gtk::Button>(name);
-    btn->set_size_request(100, 50);
-    Glib::RefPtr<Gtk::StyleContext> styleCtx = btn->get_style_context();
-    styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
-    styleCtx->add_class("coffee-button");
-    styleCtx->add_class(cssClass);
-    btn->set_margin_bottom(10);
-    btn->set_margin_top(10);
-    btn->set_margin_left(10);
-    btn->set_margin_right(10);
+CoffeeButton& CoffeeSelectionWidget::generate_button(const std::string& name, jutta_proto::CoffeeMaker::coffee_t coffee, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) {
+    CoffeeButton* btn = Gtk::make_managed<CoffeeButton>(name, coffee, cssClass, cssProvider);
+    btn->signal_clicked_sender().connect(sigc::mem_fun(this, &CoffeeSelectionWidget::on_coffee_button_clicked));
     return *btn;
+}
+
+void CoffeeSelectionWidget::set_coffee_maker(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
+    this->coffeeMaker = std::move(coffeeMaker);
+}
+
+//-----------------------------Events:-----------------------------
+void CoffeeSelectionWidget::on_coffee_button_clicked(jutta_proto::CoffeeMaker::coffee_t coffee) {
+    assert(coffeeMaker);
+    coffeeMaker->get_coffee_maker()->brew_coffee(coffee);
 }
 }  // namespace ui::widgets

@@ -2,6 +2,8 @@
 
 #include "backend/CoffeeMakerWrapper.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
+#include "ui/widgets/CoffeeSelectionWidget.hpp"
+#include "ui/widgets/CustomCoffeeWidget.hpp"
 #include <jutta_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <gtkmm.h>
@@ -12,7 +14,9 @@ class MainWindow : public Gtk::Window {
     Gtk::MenuButton* viewMoreBtn{nullptr};
     Gtk::Overlay mainOverlay{};
     Gtk::Box* mainOverlayBox{nullptr};
-    widgets::CoffeeMakerDetectionWidget coffeeMakerDetection{};
+    widgets::CoffeeMakerDetectionWidget coffeeMakerDetectionWidget{};
+    widgets::CustomCoffeeWidget customCoffeeWidget{};
+    widgets::CoffeeSelectionWidget coffeeSelectionWidget{};
 
     std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
 

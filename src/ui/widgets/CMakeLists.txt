@@ -5,7 +5,9 @@ add_library(ui_widgets STATIC CoffeeSelectionWidget.hpp
                               CustomCoffeeWidget.hpp
                               CustomCoffeeWidget.cpp
                               CoffeeMakerDetectionWidget.hpp
-                              CoffeeMakerDetectionWidget.cpp)
+                              CoffeeMakerDetectionWidget.cpp
+                              CoffeeButton.hpp
+                              CoffeeButton.cpp)
 
 target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM
                                  PRIVATE backend)
