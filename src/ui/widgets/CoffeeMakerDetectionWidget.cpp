@@ -70,20 +70,6 @@ void CoffeeMakerDetectionWidget::prep_widget() {
     show_all();
 }
 
-void CoffeeMakerDetectionWidget::on_action_btn_click() {
-    if (detecting) {
-        detecting = false;
-        actionBtn->set_sensitive(false);
-        stop_detecting();
-    } else {
-        detecting = true;
-        actionBtn->set_sensitive(true);
-        serialPort->set_sensitive(false);
-        actionSpinner->start();
-        start_detecting();
-    }
-}
-
 void CoffeeMakerDetectionWidget::start_detecting() {
     prep_error_bar();
     errorBar->hide();
@@ -100,8 +86,8 @@ void CoffeeMakerDetectionWidget::start_detecting() {
 
 void CoffeeMakerDetectionWidget::stop_detecting() {
     assert(detection);
-    detection->signal_state_changed().clear();
     detection->stop();
+    detection->signal_state_changed().clear();
     detection = nullptr;
 }
 
@@ -174,5 +160,19 @@ void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::Coffe
 
 void CoffeeMakerDetectionWidget::on_error_bar_response(int /*response*/) {
     errorBar->hide();
+}
+
+void CoffeeMakerDetectionWidget::on_action_btn_click() {
+    if (detecting) {
+        detecting = false;
+        actionBtn->set_sensitive(false);
+        stop_detecting();
+    } else {
+        detecting = true;
+        actionBtn->set_sensitive(true);
+        serialPort->set_sensitive(false);
+        actionSpinner->start();
+        start_detecting();
+    }
 }
 }  // namespace ui::widgets
