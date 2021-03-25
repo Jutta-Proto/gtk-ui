@@ -1,6 +1,7 @@
 #include "MainWindow.hpp"
 #include "ui/widgets/CoffeeSelection.hpp"
 #include "ui/widgets/CustomCoffee.hpp"
+#include <memory>
 #include <gdkmm/display.h>
 #include <giomm/resource.h>
 #include <gtk/gtk.h>
@@ -109,5 +110,10 @@ void MainWindow::detect_coffee_maker() {
 void MainWindow::on_inspector_clicked() {
     viewMoreBtn->get_popover()->popdown();
     gtk_window_set_interactive_debugging(true);
+}
+
+void MainWindow::on_signal_detection_successfull(std::shared_ptr<jutta_proto::CoffeeMaker> coffeeMaker) {
+    this->coffeeMaker = std::move(coffeeMaker);
+    mainOverlayBox->hide();
 }
 }  // namespace ui::windows
