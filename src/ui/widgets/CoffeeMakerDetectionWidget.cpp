@@ -108,6 +108,10 @@ void CoffeeMakerDetectionWidget::prep_error_bar() {
     errorBarBox->add(*errorBar);
 }
 
+CoffeeMakerDetectionWidget::type_signal_detection_successfull CoffeeMakerDetectionWidget::signal_detection_successfull() {
+    return m_signal_detection_successfull;
+}
+
 //-----------------------------Events:-----------------------------
 void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::CoffeeMakerDetection::CoffeeMakerDetectionState& state) {
     switch (state) {

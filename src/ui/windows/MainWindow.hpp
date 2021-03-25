@@ -14,7 +14,7 @@ class MainWindow : public Gtk::Window {
     Gtk::MenuButton* viewMoreBtn{nullptr};
     Gtk::Overlay mainOverlay{};
     Gtk::Box* mainOverlayBox{nullptr};
-    widgets::CoffeeMakerDetectionWidget coffeeMakerDetectionWidget{};
+    widgets::CoffeeMakerDetectionWidget* coffeeMakerDetectionWidget{nullptr};
     widgets::CustomCoffeeWidget customCoffeeWidget{};
     widgets::CoffeeSelectionWidget coffeeSelectionWidget{};
 

@@ -1,4 +1,5 @@
 #include "MainWindow.hpp"
+#include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
 #include <memory>
 #include <gdkmm/display.h>
 #include <giomm/resource.h>
@@ -9,6 +10,7 @@
 #include <gtkmm/popovermenu.h>
 #include <gtkmm/stackswitcher.h>
 #include <gtkmm/window.h>
+#include <sigc++/functors/mem_fun.h>
 
 namespace ui::windows {
 MainWindow::MainWindow() {
@@ -92,7 +94,11 @@ void MainWindow::prep_advanced(Gtk::Stack* stack) {
 }
 
 void MainWindow::detect_coffee_maker() {
-    mainOverlayBox->add(coffeeMakerDetectionWidget);
+    if (!coffeeMakerDetectionWidget) {
+        coffeeMakerDetectionWidget = Gtk::make_managed<widgets::CoffeeMakerDetectionWidget>();
+        coffeeMakerDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_signal_detection_successfull));
+        mainOverlayBox->add(*coffeeMakerDetectionWidget);
+    }
     mainOverlayBox->show_all();
 }
 
