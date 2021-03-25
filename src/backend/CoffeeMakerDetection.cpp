@@ -1,4 +1,5 @@
 #include "CoffeeMakerDetection.hpp"
+#include "jutta_proto/JuttaCommands.hpp"
 #include "jutta_proto/JuttaConnection.hpp"
 #include <cassert>
 #include <logger/Logger.hpp>
@@ -54,7 +55,18 @@ void CoffeeMakerDetection::run() {
     std::vector<uint8_t> readBuffer{};
     while (state == CoffeeMakerDetectionState::RUNNING) {
         try {
-            static_cast<void>(connection->read_decoded(readBuffer));
+            // Send:
+            if (!connection->write_decoded(jutta_proto::JUTTA_GET_TYPE)) {
+                SPDLOG_WARN("Failed to write to coffee maker to get type.");
+                continue;
+            }
+
+            // Read:
+            if (!connection->read_decoded(readBuffer)) {
+                SPDLOG_WARN("Failed to read from coffee maker to get type.");
+                continue;
+                ;
+            }
             if (!readBuffer.empty()) {
                 std::string resultRead = jutta_proto::JuttaConnection::vec_to_string(readBuffer);
                 if (resultRead.starts_with("ty:") && resultRead.ends_with("\r\n")) {
