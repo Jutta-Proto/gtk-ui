@@ -131,7 +131,8 @@ bool MainWindow::on_key_pressed(GdkEventKey* event) {
         unfullscreen();
         maximize();
         return true;
-    } else if (event->keyval == GDK_KEY_F11) {
+    }
+    if (event->keyval == GDK_KEY_F11) {
         if (inFullScreen) {
             unfullscreen();
             maximize();
