@@ -1,5 +1,6 @@
 #include "MainWindow.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
+#include "ui/widgets/NfcCardReaderWidget.hpp"
 #include <memory>
 #include <gdk/gdkkeysyms.h>
 #include <gdkmm/display.h>
@@ -10,6 +11,7 @@
 #include <gtkmm/object.h>
 #include <gtkmm/popovermenu.h>
 #include <gtkmm/stackswitcher.h>
+#include <gtkmm/widget.h>
 #include <gtkmm/window.h>
 #include <sigc++/functors/mem_fun.h>
 
@@ -83,8 +85,24 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     styleCtx->add_class("coffee-beans-background");
 
+    Gtk::Box* bottomBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+    bottomBox->set_homogeneous(true);
+    mainBox->add(*bottomBox);
+
+    // Logout:
+    Gtk::Button* logoutBtn = Gtk::make_managed<Gtk::Button>("Logout");
+    logoutBtn->set_margin_end(10);
+    logoutBtn->set_halign(Gtk::Align::ALIGN_END);
+    logoutBtn->set_valign(Gtk::Align::ALIGN_CENTER);
+    logoutBtn->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_logout_clicked));
+    bottomBox->add(*logoutBtn);
+
     // Custom coffee:
-    mainBox->add(customCoffeeWidget);
+    bottomBox->add(customCoffeeWidget);
+
+    // Placeholder:
+    Gtk::Box* placeholderBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    bottomBox->add(*placeholderBox);
 
     // Overlay:
     mainOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
@@ -103,10 +121,39 @@ void MainWindow::prep_advanced(Gtk::Stack* stack) {
 void MainWindow::detect_coffee_maker() {
     if (!coffeeMakerDetectionWidget) {
         coffeeMakerDetectionWidget = Gtk::make_managed<widgets::CoffeeMakerDetectionWidget>();
-        coffeeMakerDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_signal_detection_successfull));
-        mainOverlayBox->add(*coffeeMakerDetectionWidget);
+        coffeeMakerDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_signal_coffee_maker_detection_successfull));
     }
+    clear_overlay_children();
+    mainOverlayBox->add(*coffeeMakerDetectionWidget);
     mainOverlayBox->show_all();
+}
+
+void MainWindow::detect_nfc_card() {
+    if (!nfcCardDetectionWidget) {
+        nfcCardDetectionWidget = Gtk::make_managed<widgets::NfcCardReaderWidget>();
+        nfcCardDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_signal_nfc_card_detection_successfull));
+        nfcCardDetectionWidget->signal_detection_canceled().connect(sigc::mem_fun(this, &MainWindow::on_signal_nfc_card_detection_canceled));
+    }
+    clear_overlay_children();
+    mainOverlayBox->add(*nfcCardDetectionWidget);
+    mainOverlayBox->show_all();
+}
+
+void MainWindow::clear_overlay_children() {
+    for (Gtk::Widget* widget : mainOverlayBox->get_children()) {
+        mainOverlayBox->remove(*widget);
+    }
+}
+
+void MainWindow::load_user_profile(const std::string& cardId) {
+    if (cardId.empty()) {
+        return;
+    }
+    // TODO(me): Load profile for user
+}
+
+void MainWindow::hide_overlay() {
+    mainOverlayBox->hide();
 }
 
 //-----------------------------Events:-----------------------------
@@ -115,11 +162,20 @@ void MainWindow::on_inspector_clicked() {
     gtk_window_set_interactive_debugging(true);
 }
 
-void MainWindow::on_signal_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
+void MainWindow::on_signal_coffee_maker_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
     this->coffeeMaker = std::move(coffeeMaker);
     coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
     customCoffeeWidget.set_coffee_maker(this->coffeeMaker);
-    mainOverlayBox->hide();
+    detect_nfc_card();
+}
+
+void MainWindow::on_signal_nfc_card_detection_successfull(const std::string& cardId) {
+    load_user_profile(cardId);
+    hide_overlay();
+}
+void MainWindow::on_signal_nfc_card_detection_canceled() {
+    load_user_profile("");
+    hide_overlay();
 }
 
 void MainWindow::on_full_screen_clicked() {
@@ -147,5 +203,9 @@ bool MainWindow::on_key_pressed(GdkEventKey* event) {
 bool MainWindow::on_window_state_changed(GdkEventWindowState* state) {
     inFullScreen = state->new_window_state & GDK_WINDOW_STATE_FULLSCREEN;
     return false;
+}
+
+void MainWindow::on_logout_clicked() {
+    detect_nfc_card();
 }
 }  // namespace ui::windows

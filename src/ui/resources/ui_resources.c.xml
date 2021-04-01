@@ -4,6 +4,7 @@
     <file>background.jpg</file>
     <file>espresso.png</file>
     <file>coffee.png</file>
+    <file>nfc.png</file>
     <file>theme.css</file>
   </gresource>
 </gresources>
