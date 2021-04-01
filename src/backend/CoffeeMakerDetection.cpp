@@ -6,6 +6,7 @@
 #include <memory>
 #include <optional>
 #include <spdlog/spdlog.h>
+#include <sys/stat.h>
 
 namespace backend {
 CoffeeMakerDetection::CoffeeMakerDetection(std::string&& device) : connection(std::make_unique<jutta_proto::JuttaConnection>(std::move(device))) {
@@ -13,9 +14,7 @@ CoffeeMakerDetection::CoffeeMakerDetection(std::string&& device) : connection(st
 }
 
 CoffeeMakerDetection::~CoffeeMakerDetection() {
-    if (state == CoffeeMakerDetectionState::RUNNING) {
-        stop();
-    }
+    stop();
 }
 
 void CoffeeMakerDetection::set_state(CoffeeMakerDetectionState newState) {
@@ -32,10 +31,15 @@ void CoffeeMakerDetection::start() {
 }
 
 void CoffeeMakerDetection::stop() {
-    assert(mainThread);
+    if(!mainThread) {
+        return;
+    }
     SPDLOG_DEBUG("Stoping coffee maker detection...");
-    set_state(CoffeeMakerDetectionState::CANCELD);
+    if(state == CoffeeMakerDetectionState::RUNNING) {
+        set_state(CoffeeMakerDetectionState::CANCELD);
+    } 
     mainThread->join();
+    mainThread = std::nullopt;
     SPDLOG_DEBUG("Stoped coffee maker detection.");
     set_state(CoffeeMakerDetectionState::NOT_RUNNING);
 }
