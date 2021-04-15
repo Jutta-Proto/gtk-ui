@@ -13,6 +13,8 @@ class CustomCoffeeWidget : public Gtk::Box {
 
     std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
 
+    bool cancel{false};
+
  public:
     CustomCoffeeWidget();
 

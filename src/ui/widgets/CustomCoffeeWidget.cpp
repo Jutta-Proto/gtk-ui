@@ -73,7 +73,8 @@ void CustomCoffeeWidget::on_brew_clicked() {
     set_sensitive(false);
     std::chrono::milliseconds beansTime = std::chrono::milliseconds{static_cast<int64_t>(3600.0 * (beansScale->get_value() / 100.0))};
     std::chrono::milliseconds waterTime = std::chrono::milliseconds{static_cast<int64_t>(40000.0 * (beansScale->get_value() / 100.0))};
-    coffeeMaker->get_coffee_maker()->brew_custom_coffee(beansTime, waterTime);
+    cancel = false;
+    coffeeMaker->get_coffee_maker()->brew_custom_coffee(&cancel, beansTime, waterTime);
     set_sensitive(true);
 }
 }  // namespace ui::widgets
