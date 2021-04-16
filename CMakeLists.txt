@@ -71,6 +71,7 @@ else()
 endif()
 
 conan_cmake_run(REQUIRES catch2/2.13.3
+                         nlohmann_json/3.9.1
                          spdlog/1.8.0
                 SETTINGS compiler.cppstd=${CMAKE_CXX_STANDARD}
                          os=${CMAKE_SYSTEM_NAME}
