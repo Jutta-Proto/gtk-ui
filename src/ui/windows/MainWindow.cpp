@@ -14,10 +14,17 @@
 #include <gtkmm/widget.h>
 #include <gtkmm/window.h>
 #include <sigc++/functors/mem_fun.h>
+#include <spdlog/spdlog.h>
 
 namespace ui::windows {
-MainWindow::MainWindow() {
+MainWindow::MainWindow() : nfcCardReader() {
     prep_window();
+    nfcCardReader.signal_card_detected().connect(sigc::mem_fun(this, &MainWindow::on_nfc_card_detected));
+    nfcCardReader.start();
+}
+
+MainWindow::~MainWindow() {
+    nfcCardReader.stop();
 }
 
 void MainWindow::prep_window() {
@@ -63,7 +70,8 @@ void MainWindow::prep_window() {
 
     show_all();
 
-    detect_coffee_maker();
+    // detect_coffee_maker();
+    show_nfc_card_detection();
 }
 
 void MainWindow::prep_overview(Gtk::Stack* stack) {
@@ -128,10 +136,9 @@ void MainWindow::detect_coffee_maker() {
     mainOverlayBox->show_all();
 }
 
-void MainWindow::detect_nfc_card() {
+void MainWindow::show_nfc_card_detection() {
     if (!nfcCardDetectionWidget) {
         nfcCardDetectionWidget = Gtk::make_managed<widgets::NfcCardReaderWidget>();
-        nfcCardDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_signal_nfc_card_detection_successfull));
         nfcCardDetectionWidget->signal_detection_canceled().connect(sigc::mem_fun(this, &MainWindow::on_signal_nfc_card_detection_canceled));
     }
     clear_overlay_children();
@@ -147,9 +154,12 @@ void MainWindow::clear_overlay_children() {
 
 void MainWindow::load_user_profile(const std::string& cardId) {
     if (cardId.empty()) {
+        SPDLOG_INFO("Loading default user profile...");
+        SPDLOG_INFO("Default user profile loaded.");
         return;
     }
-    // TODO(me): Load profile for user
+    SPDLOG_INFO("Loading user profile for '{}'...", cardId);
+    SPDLOG_INFO("User profile for '{}' loaded.", cardId);
 }
 
 void MainWindow::hide_overlay() {
@@ -166,13 +176,9 @@ void MainWindow::on_signal_coffee_maker_detection_successfull(std::shared_ptr<ba
     this->coffeeMaker = std::move(coffeeMaker);
     coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
     customCoffeeWidget.set_coffee_maker(this->coffeeMaker);
-    detect_nfc_card();
+    show_nfc_card_detection();
 }
 
-void MainWindow::on_signal_nfc_card_detection_successfull(const std::string& cardId) {
-    load_user_profile(cardId);
-    hide_overlay();
-}
 void MainWindow::on_signal_nfc_card_detection_canceled() {
     load_user_profile("");
     hide_overlay();
@@ -197,6 +203,9 @@ bool MainWindow::on_key_pressed(GdkEventKey* event) {
         }
         return true;
     }
+    if (event->length == 1) {
+        nfcCardReader.on_new_char_input(*(event->string));
+    }
     return false;
 }
 
@@ -206,6 +215,11 @@ bool MainWindow::on_window_state_changed(GdkEventWindowState* state) {
 }
 
 void MainWindow::on_logout_clicked() {
-    detect_nfc_card();
+    show_nfc_card_detection();
+}
+
+void MainWindow::on_nfc_card_detected(const std::string& cardId) {
+    load_user_profile(cardId);
+    hide_overlay();
 }
 }  // namespace ui::windows

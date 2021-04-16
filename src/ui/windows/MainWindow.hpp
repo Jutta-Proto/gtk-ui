@@ -1,6 +1,7 @@
 #pragma once
 
 #include "backend/CoffeeMakerWrapper.hpp"
+#include "backend/NfcCardReader.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
 #include "ui/widgets/CoffeeSelectionWidget.hpp"
 #include "ui/widgets/CustomCoffeeWidget.hpp"
@@ -22,19 +23,23 @@ class MainWindow : public Gtk::Window {
     widgets::CoffeeSelectionWidget coffeeSelectionWidget{};
 
     std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
+    backend::NfcCardReader nfcCardReader{};
 
  public:
     MainWindow();
+    ~MainWindow() override;
 
  private:
     void prep_window();
     void prep_overview(Gtk::Stack* stack);
     static void prep_advanced(Gtk::Stack* stack);
     void detect_coffee_maker();
-    void detect_nfc_card();
+    void show_nfc_card_detection();
     void hide_overlay();
     void clear_overlay_children();
     static void load_user_profile(const std::string& cardId);
+
+    void load_user(std::string userId);
 
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
@@ -45,5 +50,6 @@ class MainWindow : public Gtk::Window {
     void on_logout_clicked();
     bool on_key_pressed(GdkEventKey* event);
     bool on_window_state_changed(GdkEventWindowState* state);
+    void on_nfc_card_detected(const std::string& cardId);
 };
 }  // namespace ui::windows

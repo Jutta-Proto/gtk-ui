@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.16)
 
 include(Catch)
 
-add_executable(tests Tests.cpp)
+add_executable(tests Tests.cpp
+                     TestFixedSizeStack.cpp)
 
 set_target_properties(tests PROPERTIES UNITY_BUILD OFF)
-target_link_libraries(tests PRIVATE CONAN_PKG::catch2)
+target_link_libraries(tests PRIVATE CONAN_PKG::catch2 backend)
 
 catch_discover_tests(tests)
 

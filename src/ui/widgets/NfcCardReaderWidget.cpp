@@ -1,5 +1,5 @@
 #include "NfcCardReaderWidget.hpp"
-#include "backend/NfcDetection.hpp"
+#include "backend/NfcCardReader.hpp"
 #include <cassert>
 #include <cstddef>
 #include <memory>
@@ -89,27 +89,6 @@ void NfcCardReaderWidget::prep_widget() {
     show_all();
 }
 
-void NfcCardReaderWidget::start_detecting() {
-    prep_error_bar();
-    errorBar->hide();
-
-    if (detection) {
-        stop_detecting();
-    }
-
-    assert(!detection);
-    detection = std::make_unique<backend::NfcDetection>();
-    detection->signal_state_changed().connect(sigc::mem_fun(*this, &NfcCardReaderWidget::on_detection_state_changed));
-    detection->start();
-}
-
-void NfcCardReaderWidget::stop_detecting() {
-    assert(detection);
-    detection->stop();
-    detection->signal_state_changed().clear();
-    detection = nullptr;
-}
-
 void NfcCardReaderWidget::prep_error_bar() {
     if (errorBar) {
         return;
@@ -127,42 +106,11 @@ void NfcCardReaderWidget::prep_error_bar() {
     errorBarBox->add(*errorBar);
 }
 
-NfcCardReaderWidget::type_signal_detection_successfull NfcCardReaderWidget::signal_detection_successfull() {
-    return m_signal_detection_successfull;
-}
-
 NfcCardReaderWidget::type_signal_detection_canceled NfcCardReaderWidget::signal_detection_canceled() {
     return m_signal_detection_canceled;
 }
 
 //-----------------------------Events:-----------------------------
-void NfcCardReaderWidget::on_detection_state_changed(const backend::NfcDetection::NfcDetectionState& state) {
-    switch (state) {
-        case backend::NfcDetection::NfcDetectionState::SUCCESS:
-            runningSpinner->stop();
-            // Emit the signal handler:
-            m_signal_detection_successfull.emit(detection->get_card_id());
-            break;
-
-        case backend::NfcDetection::NfcDetectionState::ERROR:
-            runningSpinner->stop();
-
-            errorLabel->set_label(detection->get_last_error());
-            errorBar->show_all();
-            break;
-
-        case backend::NfcDetection::NfcDetectionState::RUNNING:
-            runningSpinner->start();
-            break;
-
-        case backend::NfcDetection::NfcDetectionState::CANCELD:
-        case backend::NfcDetection::NfcDetectionState::NOT_RUNNING:
-        default:
-            runningSpinner->stop();
-            break;
-    }
-}
-
 void NfcCardReaderWidget::on_error_bar_response(int /*response*/) {
     errorBar->hide();
 }

@@ -25,7 +25,8 @@ Checks: '*,
 -llvmlibc-implementation-in-namespace,
 -llvmlibc-callee-namespace,
 -llvmlibc-restrict-system-libc-headers,
--fuchsia-multiple-inheritance
+-fuchsia-multiple-inheritance,
+-cppcoreguidelines-pro-bounds-constant-array-index
 '
 WarningsAsErrors: '*'
 HeaderFilterRegex: 'src/*.hpp'
