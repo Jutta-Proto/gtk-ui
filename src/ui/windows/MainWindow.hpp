@@ -2,6 +2,7 @@
 
 #include "backend/CoffeeMakerWrapper.hpp"
 #include "backend/NfcCardReader.hpp"
+#include "backend/storage/UserProfileStorage.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
 #include "ui/widgets/CoffeeSelectionWidget.hpp"
 #include "ui/widgets/CustomCoffeeWidget.hpp"
@@ -9,6 +10,7 @@
 #include <jutta_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <gtkmm.h>
+#include <gtkmm/label.h>
 
 namespace ui::windows {
 class MainWindow : public Gtk::Window {
@@ -17,6 +19,7 @@ class MainWindow : public Gtk::Window {
     Gtk::MenuButton* viewMoreBtn{nullptr};
     Gtk::Overlay mainOverlay{};
     Gtk::Box* mainOverlayBox{nullptr};
+    Gtk::Label* userLabel{nullptr};
     widgets::CoffeeMakerDetectionWidget* coffeeMakerDetectionWidget{nullptr};
     widgets::NfcCardReaderWidget* nfcCardDetectionWidget{nullptr};
     widgets::CustomCoffeeWidget customCoffeeWidget{};
@@ -24,6 +27,7 @@ class MainWindow : public Gtk::Window {
 
     std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
     backend::NfcCardReader nfcCardReader{};
+    bool skipNextLogoutClicked{false};
 
  public:
     MainWindow();
@@ -37,7 +41,8 @@ class MainWindow : public Gtk::Window {
     void show_nfc_card_detection();
     void hide_overlay();
     void clear_overlay_children();
-    static void load_user_profile(const std::string& cardId);
+    void load_user_profile(const std::string& cardId);
+    void load_user_profile(backend::storage::UserProfile* profile);
 
     void load_user(std::string userId);
 

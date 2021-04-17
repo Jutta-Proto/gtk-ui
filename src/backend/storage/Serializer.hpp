@@ -1,10 +1,10 @@
 #pragma once
 
-#include "context/backend/logger/Logger.hpp"
-#include "context/utils/Date.hpp"
+#include "logger/Logger.hpp"
 
 #include <chrono>
 #include <filesystem>
+#include <fstream>
 #include <memory>
 #include <nlohmann/json.hpp>
 #include <optional>
@@ -15,33 +15,51 @@
 // Required so we can parse std::optional
 #define JSON_HAS_CPP_17
 
-namespace storage {
+namespace backend::storage {
 struct Metadata;
 void to_json(nlohmann::json& j, const Metadata& m);
 void from_json(const nlohmann::json& j, Metadata& m);
-}  // namespace storage
+}  // namespace backend::storage
 
-namespace date {
-void to_json(nlohmann::json& j, const year_month_day& ymd);
-void from_json(const nlohmann::json& j, year_month_day& ymd);
-}  // namespace date
-
-namespace storage {
+namespace backend::storage {
 class Settings;
+struct UserProfileStorage;
 class Serializer {
  private:
     friend Settings;
+    friend UserProfileStorage;
     const std::filesystem::path filename;
-    const bool compression = false;
     nlohmann::json js_int = nlohmann::json::object();
 
  public:
-    explicit Serializer(const std::filesystem::path filename, bool compression = false) noexcept : filename(filename), compression(compression) {}
-    explicit Serializer(const std::string&& filename, bool compression = false) noexcept : filename(std::filesystem::path(filename)), compression(compression) {}
-    explicit Serializer(const std::string_view filename, bool compression = false) noexcept : filename(std::filesystem::path(filename)), compression(compression) {}
+    explicit Serializer(std::filesystem::path filename) noexcept : filename(std::move(filename)) {}
+    explicit Serializer(const std::string&& filename) noexcept : filename(std::filesystem::path(filename)) {}
+    explicit Serializer(const std::string_view filename) noexcept : filename(std::filesystem::path(filename)) {}
 
-    bool read_in();
-    void write_out() const;
+    bool read_in() {
+        std::ifstream i(this->filename);
+        if (i.fail()) {
+            SPDLOG_ERROR("Failed to read {}", this->filename.string());
+            return false;
+        }
+        try {
+            i >> this->js_int;
+        } catch (nlohmann::json::parse_error& e) {
+            SPDLOG_ERROR("Error parsing {}: {}", this->filename.string(), e.what());
+            return false;
+        }
+        spdlog::info("Read json file {}", this->filename.string());
+        return true;
+    }
+
+    void write_out() const {
+        std::ofstream o(this->filename);
+        if (not o.is_open()) {
+            SPDLOG_ERROR("Failed to write to {}", this->filename.string());
+            return;
+        }
+        o << std::setw(1) << this->js_int;
+    }
 
     [[nodiscard]] bool exists(const std::string_view s) const {
         return this->js_int.contains(s);
@@ -71,7 +89,7 @@ class Serializer {
         this->js_int.emplace(key, value);
     }
 };
-}  // namespace storage
+}  // namespace backend::storage
 
 namespace nlohmann {
 template <typename T>

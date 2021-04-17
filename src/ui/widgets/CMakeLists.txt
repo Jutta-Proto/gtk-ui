@@ -12,4 +12,4 @@ add_library(ui_widgets STATIC CoffeeSelectionWidget.hpp
                               NfcCardReaderWidget.hpp)
 
 target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM
-                                 PRIVATE backend)
+                                 PRIVATE backend storage)

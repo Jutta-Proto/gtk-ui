@@ -39,3 +39,7 @@ build/
 .clangd/
 compile_commands.json
 .cache/
+
+# Ignore serialized stuff
+UserProfiles.json
+Settings.json

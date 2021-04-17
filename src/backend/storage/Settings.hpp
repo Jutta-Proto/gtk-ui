@@ -8,7 +8,9 @@
 #include <string>
 #include <string_view>
 
-namespace storage {
+namespace backend::storage {
+constexpr std::string_view SETTINGS_VERSION{"1.0"};
+
 class Settings {
  public:
     struct SettingsData {
@@ -46,4 +48,4 @@ class Settings {
 Settings& get_settings_instance();
 void to_json(nlohmann::json& j, const Settings::SettingsData& s);
 void from_json(const nlohmann::json& j, Settings::SettingsData& s);
-}  // namespace storage
+}  // namespace backend::storage

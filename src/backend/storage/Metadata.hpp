@@ -3,7 +3,7 @@
 #include <chrono>
 #include <string>
 
-namespace storage {
+namespace backend::storage {
 struct Metadata {
     unsigned version = getVersion();
     std::chrono::system_clock::time_point datetime = std::chrono::system_clock::now();
@@ -17,4 +17,4 @@ struct Metadata {
 
     bool operator==(const Metadata& other) const;
 };
-}  // namespace storage
+}  // namespace backend::storage

@@ -1,4 +1,5 @@
 #include "MainWindow.hpp"
+#include "backend/storage/UserProfileStorage.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
 #include "ui/widgets/NfcCardReaderWidget.hpp"
 #include <memory>
@@ -8,6 +9,7 @@
 #include <gtk/gtk.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
+#include <gtkmm/label.h>
 #include <gtkmm/object.h>
 #include <gtkmm/popovermenu.h>
 #include <gtkmm/stackswitcher.h>
@@ -97,13 +99,26 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     bottomBox->set_homogeneous(true);
     mainBox->add(*bottomBox);
 
+    // User:
+    Gtk::Box* userBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    userBox->set_halign(Gtk::Align::ALIGN_END);
+    userBox->set_valign(Gtk::Align::ALIGN_CENTER);
+    bottomBox->add(*userBox);
+
+    userLabel = Gtk::make_managed<Gtk::Label>("");
+    userLabel->set_valign(Gtk::Align::ALIGN_CENTER);
+    userLabel->set_selectable(true);
+    userLabel->set_justify(Gtk::Justification::JUSTIFY_CENTER);
+    userLabel->set_markup("<span font_weight='bold'>User:</span>\n-");
+    userLabel->set_margin_bottom(10);
+    userBox->add(*userLabel);
+
     // Logout:
     Gtk::Button* logoutBtn = Gtk::make_managed<Gtk::Button>("Logout");
     logoutBtn->set_margin_end(10);
-    logoutBtn->set_halign(Gtk::Align::ALIGN_END);
     logoutBtn->set_valign(Gtk::Align::ALIGN_CENTER);
     logoutBtn->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_logout_clicked));
-    bottomBox->add(*logoutBtn);
+    userBox->add(*logoutBtn);
 
     // Custom coffee:
     bottomBox->add(customCoffeeWidget);
@@ -155,11 +170,27 @@ void MainWindow::clear_overlay_children() {
 void MainWindow::load_user_profile(const std::string& cardId) {
     if (cardId.empty()) {
         SPDLOG_INFO("Loading default user profile...");
+        load_user_profile(backend::storage::UserProfileStorage::get_default_profile());
         SPDLOG_INFO("Default user profile loaded.");
         return;
     }
     SPDLOG_INFO("Loading user profile for '{}'...", cardId);
+    load_user_profile(backend::storage::get_user_profile_storage_instance().get_profile(std::string(cardId)));
     SPDLOG_INFO("User profile for '{}' loaded.", cardId);
+}
+
+void MainWindow::load_user_profile(backend::storage::UserProfile* profile) {
+    if (profile) {
+        if (profile->cardId.empty()) {
+            userLabel->set_markup("<span font_weight='bold'>User:</span>\nDefault User");
+        } else {
+            userLabel->set_markup("<span font_weight='bold'>User:</span>\n" + profile->cardId);
+        }
+    } else {
+        userLabel->set_markup("<span font_weight='bold'>User:</span>\n-");
+    }
+
+    customCoffeeWidget.set_user_profile(profile);
 }
 
 void MainWindow::hide_overlay() {
@@ -215,11 +246,18 @@ bool MainWindow::on_window_state_changed(GdkEventWindowState* state) {
 }
 
 void MainWindow::on_logout_clicked() {
+    if (skipNextLogoutClicked) {
+        skipNextLogoutClicked = false;
+        return;
+    }
+    load_user_profile(nullptr);
     show_nfc_card_detection();
 }
 
 void MainWindow::on_nfc_card_detected(const std::string& cardId) {
     load_user_profile(cardId);
     hide_overlay();
+    // Once a card has been detected, enter is being pressed. Skip this false activation:
+    skipNextLogoutClicked = true;
 }
 }  // namespace ui::windows
