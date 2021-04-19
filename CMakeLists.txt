@@ -95,7 +95,8 @@ endif()
 conan_cmake_run(REQUIRES catch2/2.13.4
                          nlohmann_json/3.9.1
                          spdlog/1.8.5
-                GENERATORS cmake_find_package)
+                GENERATORS cmake_find_package
+                BUILD missing)
 
 conan_cmake_autodetect(settings)
 conan_cmake_install(PATH_OR_REFERENCE .
