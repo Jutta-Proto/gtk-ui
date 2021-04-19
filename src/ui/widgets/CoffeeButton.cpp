@@ -1,4 +1,6 @@
 #include "CoffeeButton.hpp"
+#include <gtkmm/enums.h>
+#include <gtkmm/label.h>
 
 namespace ui::widgets {
 CoffeeButton::CoffeeButton(const Glib::ustring& label, jutta_proto::CoffeeMaker::coffee_t coffee, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) : Gtk::Button(label), coffee(coffee) {
@@ -27,6 +29,7 @@ void CoffeeButton::prep_button(const std::string& cssClass, const Glib::RefPtr<G
     set_margin_top(10);
     set_margin_start(10);
     set_margin_end(10);
+    static_cast<Gtk::Label*>(get_child())->set_justify(Gtk::Justification::JUSTIFY_CENTER);
 }
 
 CoffeeButton::type_signal_clicked_sender CoffeeButton::signal_clicked_sender() {

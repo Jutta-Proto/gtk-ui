@@ -35,8 +35,9 @@ class MainWindow : public Gtk::Window {
 
  private:
     void prep_window();
-    void prep_overview(Gtk::Stack* stack);
-    static void prep_advanced(Gtk::Stack* stack);
+    void prep_overview_stack_page(Gtk::Stack* stack);
+    void prep_custom_coffee_stack_page(Gtk::Stack* stack);
+    static void prep_advanced_stack_page(Gtk::Stack* stack);
     void detect_coffee_maker();
     void show_nfc_card_detection();
     void hide_overlay();

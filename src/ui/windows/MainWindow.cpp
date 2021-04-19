@@ -38,8 +38,9 @@ void MainWindow::prep_window() {
 
     // Content:
     Gtk::Stack* stack = Gtk::make_managed<Gtk::Stack>();
-    prep_overview(stack);
-    prep_advanced(stack);
+    prep_overview_stack_page(stack);
+    prep_custom_coffee_stack_page(stack);
+    prep_advanced_stack_page(stack);
     add(*stack);
 
     // Header bar:
@@ -76,7 +77,7 @@ void MainWindow::prep_window() {
     // show_nfc_card_detection();
 }
 
-void MainWindow::prep_overview(Gtk::Stack* stack) {
+void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     stack->add(mainOverlay, "overview", "Overview");
 
     Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
@@ -96,7 +97,6 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     styleCtx->add_class("coffee-beans-background");
 
     Gtk::Box* bottomBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-    bottomBox->set_homogeneous(true);
     mainBox->add(*bottomBox);
 
     // User:
@@ -120,13 +120,6 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     logoutBtn->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_logout_clicked));
     userBox->add(*logoutBtn);
 
-    // Custom coffee:
-    bottomBox->add(customCoffeeWidget);
-
-    // Placeholder:
-    Gtk::Box* placeholderBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    bottomBox->add(*placeholderBox);
-
     // Overlay:
     mainOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
     mainOverlay.add_overlay(*mainOverlayBox);
@@ -136,9 +129,13 @@ void MainWindow::prep_overview(Gtk::Stack* stack) {
     overlayStyleCtx->add_class("overlay-background");
 }
 
-void MainWindow::prep_advanced(Gtk::Stack* stack) {
+void MainWindow::prep_advanced_stack_page(Gtk::Stack* stack) {
     Gtk::Box* mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL, 0);
     stack->add(*mainBox, "advanced", "Advanced");
+}
+
+void MainWindow::prep_custom_coffee_stack_page(Gtk::Stack* stack) {
+    stack->add(customCoffeeWidget, "custom_coffee", "Custom Coffee");
 }
 
 void MainWindow::detect_coffee_maker() {
@@ -191,6 +188,7 @@ void MainWindow::load_user_profile(backend::storage::UserProfile* profile) {
     }
 
     customCoffeeWidget.set_user_profile(profile);
+    coffeeSelectionWidget.set_user_profile(profile);
 }
 
 void MainWindow::hide_overlay() {
