@@ -31,6 +31,7 @@ StatusBarWidget::type_signal_clicked StatusBarWidget::signal_reconnect_clicked()
 
 void StatusBarWidget::prep_widget() {
     set_halign(Gtk::Align::ALIGN_FILL);
+    set_valign(Gtk::Align::ALIGN_END);
 
     // Style:
     Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();

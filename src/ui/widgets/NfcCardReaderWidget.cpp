@@ -15,7 +15,6 @@
 #include <gtkmm/infobar.h>
 #include <gtkmm/label.h>
 #include <gtkmm/paned.h>
-#include <gtkmm/scrollable.h>
 #include <gtkmm/separator.h>
 #include <gtkmm/spinner.h>
 #include <sigc++/functors/mem_fun.h>

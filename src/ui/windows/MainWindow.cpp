@@ -13,6 +13,7 @@
 #include <gtkmm/label.h>
 #include <gtkmm/object.h>
 #include <gtkmm/popovermenu.h>
+#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/stackswitcher.h>
 #include <gtkmm/widget.h>
 #include <gtkmm/window.h>
@@ -74,8 +75,8 @@ void MainWindow::prep_window() {
 
     show_all();
 
-    show_detect_coffee_maker();
-    // show_nfc_card_detection();
+    // show_detect_coffee_maker();
+    show_nfc_card_detection();
 }
 
 void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
@@ -89,8 +90,11 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     mainBox->set_homogeneous(false);
 
     // Predefined coffee:
-    coffeeSelectionWidget.set_vexpand(true);
-    mainBox->add(coffeeSelectionWidget);
+    Gtk::ScrolledWindow* coffeeSelectionWindow = Gtk::make_managed<Gtk::ScrolledWindow>();
+    coffeeSelectionWindow->add(coffeeSelectionWidget);
+    coffeeSelectionWindow->set_policy(Gtk::PolicyType::POLICY_NEVER, Gtk::PolicyType::POLICY_AUTOMATIC);
+    coffeeSelectionWindow->set_vexpand(true);
+    mainBox->add(*coffeeSelectionWindow);
     Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
     Glib::RefPtr<Gtk::StyleContext> styleCtx = mainBox->get_style_context();
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);

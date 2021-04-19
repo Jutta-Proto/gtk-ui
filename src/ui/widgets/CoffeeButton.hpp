@@ -31,6 +31,6 @@ class CoffeeButton : public Gtk::Button {
     type_signal_clicked_sender signal_clicked_sender();
 
  private:
-    void prep_button(const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider);
+    void prep_button(const Glib::ustring& label, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider);
 };
 }  // namespace ui::widgets

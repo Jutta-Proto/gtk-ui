@@ -14,7 +14,7 @@ class CustomCoffeeWidget : public Gtk::Box {
     Gtk::Scale* beansScale{nullptr};
 
     std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
-    backend::storage::UserProfile* profile;
+    backend::storage::UserProfile* profile{nullptr};
 
     bool cancel{false};
 
