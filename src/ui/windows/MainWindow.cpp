@@ -1,5 +1,6 @@
 #include "MainWindow.hpp"
 #include "backend/storage/UserProfileStorage.hpp"
+#include "ui/utils/UiUtils.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
 #include "ui/widgets/NfcCardReaderWidget.hpp"
 #include <memory>
@@ -73,7 +74,7 @@ void MainWindow::prep_window() {
 
     show_all();
 
-    detect_coffee_maker();
+    show_detect_coffee_maker();
     // show_nfc_card_detection();
 }
 
@@ -90,35 +91,15 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     // Predefined coffee:
     coffeeSelectionWidget.set_vexpand(true);
     mainBox->add(coffeeSelectionWidget);
-    Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
-    cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
+    Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
     Glib::RefPtr<Gtk::StyleContext> styleCtx = mainBox->get_style_context();
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     styleCtx->add_class("coffee-beans-background");
 
-    Gtk::Box* bottomBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-    mainBox->add(*bottomBox);
-
-    // User:
-    Gtk::Box* userBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    userBox->set_halign(Gtk::Align::ALIGN_END);
-    userBox->set_valign(Gtk::Align::ALIGN_CENTER);
-    bottomBox->add(*userBox);
-
-    userLabel = Gtk::make_managed<Gtk::Label>("");
-    userLabel->set_valign(Gtk::Align::ALIGN_CENTER);
-    userLabel->set_selectable(true);
-    userLabel->set_justify(Gtk::Justification::JUSTIFY_CENTER);
-    userLabel->set_markup("<span font_weight='bold'>User:</span>\n-");
-    userLabel->set_margin_bottom(10);
-    userBox->add(*userLabel);
-
-    // Logout:
-    Gtk::Button* logoutBtn = Gtk::make_managed<Gtk::Button>("Logout");
-    logoutBtn->set_margin_end(10);
-    logoutBtn->set_valign(Gtk::Align::ALIGN_CENTER);
-    logoutBtn->signal_clicked().connect(sigc::mem_fun(this, &MainWindow::on_logout_clicked));
-    userBox->add(*logoutBtn);
+    // Status bar:
+    statusBarWidget.signal_logout_clicked().connect(sigc::mem_fun(this, &MainWindow::on_logout_clicked));
+    statusBarWidget.signal_reconnect_clicked().connect(sigc::mem_fun(this, &MainWindow::on_reconnect_clicked));
+    mainBox->add(statusBarWidget);
 
     // Overlay:
     mainOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
@@ -138,7 +119,7 @@ void MainWindow::prep_custom_coffee_stack_page(Gtk::Stack* stack) {
     stack->add(customCoffeeWidget, "custom_coffee", "Custom Coffee");
 }
 
-void MainWindow::detect_coffee_maker() {
+void MainWindow::show_detect_coffee_maker() {
     if (!coffeeMakerDetectionWidget) {
         coffeeMakerDetectionWidget = Gtk::make_managed<widgets::CoffeeMakerDetectionWidget>();
         coffeeMakerDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_signal_coffee_maker_detection_successfull));
@@ -177,18 +158,9 @@ void MainWindow::load_user_profile(const std::string& cardId) {
 }
 
 void MainWindow::load_user_profile(backend::storage::UserProfile* profile) {
-    if (profile) {
-        if (profile->cardId.empty()) {
-            userLabel->set_markup("<span font_weight='bold'>User:</span>\nDefault User");
-        } else {
-            userLabel->set_markup("<span font_weight='bold'>User:</span>\n" + profile->cardId);
-        }
-    } else {
-        userLabel->set_markup("<span font_weight='bold'>User:</span>\n-");
-    }
-
     customCoffeeWidget.set_user_profile(profile);
     coffeeSelectionWidget.set_user_profile(profile);
+    statusBarWidget.set_user_profile(profile);
 }
 
 void MainWindow::hide_overlay() {
@@ -250,6 +222,10 @@ void MainWindow::on_logout_clicked() {
     }
     load_user_profile(nullptr);
     show_nfc_card_detection();
+}
+
+void MainWindow::on_reconnect_clicked() {
+    show_detect_coffee_maker();
 }
 
 void MainWindow::on_nfc_card_detected(const std::string& cardId) {

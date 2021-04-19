@@ -9,7 +9,9 @@ add_library(ui_widgets STATIC CoffeeSelectionWidget.hpp
                               CoffeeButton.hpp
                               CoffeeButton.cpp
                               NfcCardReaderWidget.cpp
-                              NfcCardReaderWidget.hpp)
+                              NfcCardReaderWidget.hpp
+                              StatusBarWidget.cpp
+                              StatusBarWidget.hpp)
 
 target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM
                                  PRIVATE backend storage)

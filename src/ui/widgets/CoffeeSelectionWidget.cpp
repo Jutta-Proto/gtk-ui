@@ -1,8 +1,9 @@
 #include "CoffeeSelectionWidget.hpp"
+#include "ui/utils/UiUtils.hpp"
+#include <cassert>
 #include <giomm/file.h>
 #include <gtkmm/enums.h>
 #include <sigc++/functors/mem_fun.h>
-#include <cassert>
 
 namespace ui::widgets {
 CoffeeSelectionWidget::CoffeeSelectionWidget() {
@@ -13,8 +14,7 @@ void CoffeeSelectionWidget::prep_widget() {
     set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
 
     // Style:
-    Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
-    cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
+    Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
 
     // Add content:
     this->add(generate_button("Coffee", jutta_proto::CoffeeMaker::coffee_t::COFFEE, "coffee-button-coffee-background", cssProvider));

@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 
+add_subdirectory(utils)
 add_subdirectory(widgets)
 add_subdirectory(windows)
 add_subdirectory(resources)
 
-#add_library(ui STATIC UiContext.hpp UiContext.cpp ${CMAKE_CURRENT_BINARY_DIR}/ui_resources.c)
-add_library(ui STATIC UiContext.hpp UiContext.cpp)
+add_library(ui STATIC UiContext.hpp
+                      UiContext.cpp)
 
 # Propagate the variables upwards
 set(RESOURCE_DEF ${RESOURCE_DEF} PARENT_SCOPE)

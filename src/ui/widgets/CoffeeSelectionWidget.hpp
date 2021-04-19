@@ -12,7 +12,7 @@ namespace ui::widgets {
 class CoffeeSelectionWidget : public Gtk::FlowBox {
  private:
     std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
-    backend::storage::UserProfile* profile;
+    backend::storage::UserProfile* profile{nullptr};
 
  public:
     CoffeeSelectionWidget();

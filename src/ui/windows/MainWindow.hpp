@@ -7,6 +7,7 @@
 #include "ui/widgets/CoffeeSelectionWidget.hpp"
 #include "ui/widgets/CustomCoffeeWidget.hpp"
 #include "ui/widgets/NfcCardReaderWidget.hpp"
+#include "ui/widgets/StatusBarWidget.hpp"
 #include <jutta_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <gtkmm.h>
@@ -19,11 +20,11 @@ class MainWindow : public Gtk::Window {
     Gtk::MenuButton* viewMoreBtn{nullptr};
     Gtk::Overlay mainOverlay{};
     Gtk::Box* mainOverlayBox{nullptr};
-    Gtk::Label* userLabel{nullptr};
     widgets::CoffeeMakerDetectionWidget* coffeeMakerDetectionWidget{nullptr};
     widgets::NfcCardReaderWidget* nfcCardDetectionWidget{nullptr};
     widgets::CustomCoffeeWidget customCoffeeWidget{};
     widgets::CoffeeSelectionWidget coffeeSelectionWidget{};
+    widgets::StatusBarWidget statusBarWidget{};
 
     std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
     backend::NfcCardReader nfcCardReader{};
@@ -38,7 +39,7 @@ class MainWindow : public Gtk::Window {
     void prep_overview_stack_page(Gtk::Stack* stack);
     void prep_custom_coffee_stack_page(Gtk::Stack* stack);
     static void prep_advanced_stack_page(Gtk::Stack* stack);
-    void detect_coffee_maker();
+    void show_detect_coffee_maker();
     void show_nfc_card_detection();
     void hide_overlay();
     void clear_overlay_children();
@@ -54,6 +55,7 @@ class MainWindow : public Gtk::Window {
     void on_signal_nfc_card_detection_canceled();
     void on_full_screen_clicked();
     void on_logout_clicked();
+    void on_reconnect_clicked();
     bool on_key_pressed(GdkEventKey* event);
     bool on_window_state_changed(GdkEventWindowState* state);
     void on_nfc_card_detected(const std::string& cardId);

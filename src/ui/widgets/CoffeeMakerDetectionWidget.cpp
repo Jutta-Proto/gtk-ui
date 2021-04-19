@@ -1,5 +1,6 @@
 #include "CoffeeMakerDetectionWidget.hpp"
 #include "jutta_proto/CoffeeMaker.hpp"
+#include "ui/utils/UiUtils.hpp"
 #include <cassert>
 #include <cstddef>
 #include <memory>
@@ -28,8 +29,7 @@ void CoffeeMakerDetectionWidget::prep_widget() {
     set_halign(Gtk::ALIGN_CENTER);
     set_vexpand(true);
     set_shadow_type(Gtk::ShadowType::SHADOW_OUT);
-    Glib::RefPtr<Gtk::CssProvider> cssProvider = Gtk::CssProvider::create();
-    cssProvider->load_from_file(Gio::File::create_for_uri("resource:///ui/theme.css"));
+    Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
     Glib::RefPtr<Gtk::StyleContext> styleCtx = get_style_context();
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     styleCtx->add_class("overlay-frame-background");

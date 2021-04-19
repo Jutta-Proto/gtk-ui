@@ -55,3 +55,7 @@
 .overlay-frame-background {
     background-color: @content_view_bg;
 }
+
+.status-bar-background {
+    background-color: alpha(@content_view_bg, 0.70);
+}
