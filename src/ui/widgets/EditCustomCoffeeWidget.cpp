@@ -8,11 +8,12 @@
 #include <gtkmm/adjustment.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
+#include <gtkmm/label.h>
 #include <gtkmm/scale.h>
 #include <spdlog/spdlog.h>
 
 namespace ui::widgets {
-EditCustomCoffeeWidget::EditCustomCoffeeWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
+EditCustomCoffeeWidget::EditCustomCoffeeWidget() {
     prep_widget();
 }
 
@@ -21,55 +22,69 @@ void EditCustomCoffeeWidget::prep_widget() {
     Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
     Glib::RefPtr<Gtk::StyleContext> styleCtx = get_style_context();
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
-    styleCtx->add_class("custom-coffee-box");
+    styleCtx->add_class("overlay-frame-background");
 
     set_halign(Gtk::Align::ALIGN_CENTER);
+    set_valign(Gtk::Align::ALIGN_CENTER);
     set_margin_bottom(10);
     set_margin_top(10);
     set_margin_left(10);
     set_margin_right(10);
+    set_size_request(350, -1);
+
+    mainBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    mainBox->set_margin_bottom(10);
+    mainBox->set_margin_top(10);
+    mainBox->set_margin_left(10);
+    mainBox->set_margin_right(10);
+
+    // Text:
+    Gtk::Label* label = Gtk::make_managed<Gtk::Label>("Change settings here to manipulate the amount of water, beans and the temperature of your custom coffee.\nThe default value of 1.00 represets roughly a default coffee.");
+    label->set_line_wrap(true);
+    label->set_line_wrap_mode(Pango::WrapMode::WRAP_WORD);
+    mainBox->add(*label);
 
     // Scales:
-    Gtk::Box* scalesBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
-    scalesBox->set_margin_start(10);
-    scalesBox->set_margin_top(5);
-    scalesBox->set_size_request(300, -1);
+    add(*mainBox);
     Gtk::Label* waterLabel = Gtk::make_managed<Gtk::Label>("Water:");
     waterLabel->set_halign(Gtk::Align::ALIGN_START);
-    scalesBox->add(*waterLabel);
+    mainBox->add(*waterLabel);
     waterScale = Gtk::make_managed<Gtk::Scale>(Gtk::Adjustment::create(1, 0.5, 2), Gtk::Orientation::ORIENTATION_HORIZONTAL);
     waterScale->signal_button_release_event().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_water_scale_button_released));
     waterScale->set_digits(2);
     waterScale->set_draw_value();
-    scalesBox->add(*waterScale);
+    mainBox->add(*waterScale);
     Gtk::Label* beansLabel = Gtk::make_managed<Gtk::Label>("Beans:");
+    beansLabel->set_margin_top(10);
     beansLabel->set_halign(Gtk::Align::ALIGN_START);
-    scalesBox->add(*beansLabel);
+    mainBox->add(*beansLabel);
     beansScale = Gtk::make_managed<Gtk::Scale>(Gtk::Adjustment::create(1, 0.5, 2), Gtk::Orientation::ORIENTATION_HORIZONTAL);
     beansScale->signal_button_release_event().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_beans_scale_button_released));
     beansScale->set_digits(2);
     beansScale->set_draw_value();
-    scalesBox->add(*beansScale);
-    add(*scalesBox);
+    mainBox->add(*beansScale);
+    Gtk::Label* tempLabel = Gtk::make_managed<Gtk::Label>("Temperature:");
+    tempLabel->set_margin_top(10);
+    tempLabel->set_halign(Gtk::Align::ALIGN_START);
+    mainBox->add(*tempLabel);
+    tempScale = Gtk::make_managed<Gtk::Scale>(Gtk::Adjustment::create(1, 0.5, 2), Gtk::Orientation::ORIENTATION_HORIZONTAL);
+    tempScale->signal_button_release_event().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_temp_scale_button_released));
+    tempScale->set_digits(2);
+    tempScale->set_draw_value();
+    mainBox->add(*tempScale);
 
-    // Brew button:
-    Gtk::Button* brewBtn = Gtk::make_managed<Gtk::Button>("Brew");
-    brewBtn->signal_clicked().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_brew_clicked));
-    styleCtx = brewBtn->get_style_context();
-    styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
-    styleCtx->add_class("coffee-button");
-    brewBtn->set_margin_bottom(5);
-    brewBtn->set_margin_top(5);
-    brewBtn->set_margin_right(5);
-    brewBtn->set_margin_left(5);
-    brewBtn->set_size_request(50, 50);
-    brewBtn->set_halign(Gtk::Align::ALIGN_CENTER);
-    brewBtn->set_valign(Gtk::Align::ALIGN_CENTER);
-    add(*brewBtn);
-}
-
-void EditCustomCoffeeWidget::set_coffee_maker(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
-    this->coffeeMaker = std::move(coffeeMaker);
+    // Buttons:
+    Gtk::Box* buttonsBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+    buttonsBox->set_margin_top(10);
+    mainBox->add(*buttonsBox);
+    Gtk::Button* backBtn = Gtk::make_managed<Gtk::Button>("Back");
+    backBtn->set_halign(Gtk::Align::ALIGN_START);
+    backBtn->signal_clicked().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_back_clicked));
+    buttonsBox->pack_start(*backBtn);
+    Gtk::Button* resetBtn = Gtk::make_managed<Gtk::Button>("Reset");
+    resetBtn->set_halign(Gtk::Align::ALIGN_END);
+    resetBtn->signal_clicked().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_reset_clicked));
+    buttonsBox->pack_end(*resetBtn);
 }
 
 void EditCustomCoffeeWidget::set_user_profile(backend::storage::UserProfile* profile) {
@@ -77,29 +92,30 @@ void EditCustomCoffeeWidget::set_user_profile(backend::storage::UserProfile* pro
     if (profile) {
         waterScale->set_value(profile->waterFactor);
         beansScale->set_value(profile->beansFactor);
+        tempScale->set_value(profile->tempFactor);
     } else {
         waterScale->set_value(1);
         beansScale->set_value(1);
+        tempScale->set_value(1);
     }
 }
 
-//-----------------------------Events:-----------------------------
-void EditCustomCoffeeWidget::on_brew_clicked() {
-    assert(coffeeMaker);
-    set_sensitive(false);
-    std::chrono::milliseconds beansTime = std::chrono::milliseconds{static_cast<int64_t>(3600.0 * beansScale->get_value())};
-    std::chrono::milliseconds waterTime = std::chrono::milliseconds{static_cast<int64_t>(40000.0 * waterScale->get_value())};
-    cancel = false;
-    coffeeMaker->get_coffee_maker()->brew_custom_coffee(&cancel, beansTime, waterTime);
-    set_sensitive(true);
+EditCustomCoffeeWidget::type_signal_clicked EditCustomCoffeeWidget::signal_back_clicked() {
+    return m_signal_back_clicked;
 }
 
+EditCustomCoffeeWidget::type_signal_profile_value_changed EditCustomCoffeeWidget::signal_profile_value_changed() {
+    return m_signal_profile_value_changed;
+}
+
+//-----------------------------Events:-----------------------------
 bool EditCustomCoffeeWidget::on_water_scale_button_released(GdkEventButton* event) {
     if (event->button == 1 && profile) {
         double waterFactor = waterScale->get_value();
         if (profile->waterFactor != waterFactor) {
             profile->waterFactor = waterFactor;
             backend::storage::get_user_profile_storage_instance().write_profiles();
+            m_signal_profile_value_changed.emit(profile);
             SPDLOG_DEBUG("Water factor updated to: {}", waterFactor);
         }
     }
@@ -112,10 +128,39 @@ bool EditCustomCoffeeWidget::on_beans_scale_button_released(GdkEventButton* even
         if (profile->beansFactor != beansFactor) {
             profile->beansFactor = beansFactor;
             backend::storage::get_user_profile_storage_instance().write_profiles();
+            m_signal_profile_value_changed.emit(profile);
             SPDLOG_DEBUG("Beans factor updated to: {}", beansFactor);
         }
     }
     return false;
+}
+
+bool EditCustomCoffeeWidget::on_temp_scale_button_released(GdkEventButton* event) {
+    if (event->button == 1) {
+        double tempFactor = tempScale->get_value();
+        if (profile->tempFactor != tempFactor) {
+            profile->tempFactor = tempFactor;
+            backend::storage::get_user_profile_storage_instance().write_profiles();
+            m_signal_profile_value_changed.emit(profile);
+            SPDLOG_DEBUG("Temp factor updated to: {}", tempFactor);
+        }
+    }
+    return false;
+}
+
+void EditCustomCoffeeWidget::on_back_clicked() {
+    m_signal_back_clicked.emit();
+}
+
+void EditCustomCoffeeWidget::on_reset_clicked() {
+    assert(profile);
+    profile->waterFactor = 1;
+    profile->beansFactor = 1;
+    profile->tempFactor = 1;
+    set_user_profile(profile);
+    backend::storage::get_user_profile_storage_instance().write_profiles();
+    m_signal_profile_value_changed.emit(profile);
+    SPDLOG_DEBUG("Profile factors reset.");
 }
 
 }  // namespace ui::widgets

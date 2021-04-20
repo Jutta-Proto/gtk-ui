@@ -21,10 +21,6 @@
     background-size: cover;
 }
 
-.custom-coffee-box {
-    background-color: alpha(@content_view_bg, 0.50);
-}
-
 .brew-button {
     border-radius: 0;
     border-width: 0px;

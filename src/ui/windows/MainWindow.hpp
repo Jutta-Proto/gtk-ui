@@ -60,5 +60,7 @@ class MainWindow : public Gtk::Window {
     void on_reconnect_clicked();
     bool on_key_pressed(GdkEventKey* event);
     bool on_window_state_changed(GdkEventWindowState* state);
+    void on_custom_coffee_back_clicked();
+    void on_custom_coffee_profile_value_changed(backend::storage::UserProfile* profile);
 };
 }  // namespace ui::windows
