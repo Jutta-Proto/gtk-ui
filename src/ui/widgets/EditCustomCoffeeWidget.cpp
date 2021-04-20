@@ -1,4 +1,4 @@
-#include "CustomCoffeeWidget.hpp"
+#include "EditCustomCoffeeWidget.hpp"
 #include "backend/storage/UserProfileStorage.hpp"
 #include "ui/utils/UiUtils.hpp"
 #include <cassert>
@@ -12,11 +12,11 @@
 #include <spdlog/spdlog.h>
 
 namespace ui::widgets {
-CustomCoffeeWidget::CustomCoffeeWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
+EditCustomCoffeeWidget::EditCustomCoffeeWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
     prep_widget();
 }
 
-void CustomCoffeeWidget::prep_widget() {
+void EditCustomCoffeeWidget::prep_widget() {
     // Style:
     Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
     Glib::RefPtr<Gtk::StyleContext> styleCtx = get_style_context();
@@ -38,7 +38,7 @@ void CustomCoffeeWidget::prep_widget() {
     waterLabel->set_halign(Gtk::Align::ALIGN_START);
     scalesBox->add(*waterLabel);
     waterScale = Gtk::make_managed<Gtk::Scale>(Gtk::Adjustment::create(1, 0.5, 2), Gtk::Orientation::ORIENTATION_HORIZONTAL);
-    waterScale->signal_button_release_event().connect(sigc::mem_fun(this, &CustomCoffeeWidget::on_water_scale_button_released));
+    waterScale->signal_button_release_event().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_water_scale_button_released));
     waterScale->set_digits(2);
     waterScale->set_draw_value();
     scalesBox->add(*waterScale);
@@ -46,7 +46,7 @@ void CustomCoffeeWidget::prep_widget() {
     beansLabel->set_halign(Gtk::Align::ALIGN_START);
     scalesBox->add(*beansLabel);
     beansScale = Gtk::make_managed<Gtk::Scale>(Gtk::Adjustment::create(1, 0.5, 2), Gtk::Orientation::ORIENTATION_HORIZONTAL);
-    beansScale->signal_button_release_event().connect(sigc::mem_fun(this, &CustomCoffeeWidget::on_beans_scale_button_released));
+    beansScale->signal_button_release_event().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_beans_scale_button_released));
     beansScale->set_digits(2);
     beansScale->set_draw_value();
     scalesBox->add(*beansScale);
@@ -54,7 +54,7 @@ void CustomCoffeeWidget::prep_widget() {
 
     // Brew button:
     Gtk::Button* brewBtn = Gtk::make_managed<Gtk::Button>("Brew");
-    brewBtn->signal_clicked().connect(sigc::mem_fun(this, &CustomCoffeeWidget::on_brew_clicked));
+    brewBtn->signal_clicked().connect(sigc::mem_fun(this, &EditCustomCoffeeWidget::on_brew_clicked));
     styleCtx = brewBtn->get_style_context();
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
     styleCtx->add_class("coffee-button");
@@ -68,11 +68,11 @@ void CustomCoffeeWidget::prep_widget() {
     add(*brewBtn);
 }
 
-void CustomCoffeeWidget::set_coffee_maker(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
+void EditCustomCoffeeWidget::set_coffee_maker(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
     this->coffeeMaker = std::move(coffeeMaker);
 }
 
-void CustomCoffeeWidget::set_user_profile(backend::storage::UserProfile* profile) {
+void EditCustomCoffeeWidget::set_user_profile(backend::storage::UserProfile* profile) {
     this->profile = profile;
     if (profile) {
         waterScale->set_value(profile->waterFactor);
@@ -84,7 +84,7 @@ void CustomCoffeeWidget::set_user_profile(backend::storage::UserProfile* profile
 }
 
 //-----------------------------Events:-----------------------------
-void CustomCoffeeWidget::on_brew_clicked() {
+void EditCustomCoffeeWidget::on_brew_clicked() {
     assert(coffeeMaker);
     set_sensitive(false);
     std::chrono::milliseconds beansTime = std::chrono::milliseconds{static_cast<int64_t>(3600.0 * beansScale->get_value())};
@@ -94,7 +94,7 @@ void CustomCoffeeWidget::on_brew_clicked() {
     set_sensitive(true);
 }
 
-bool CustomCoffeeWidget::on_water_scale_button_released(GdkEventButton* event) {
+bool EditCustomCoffeeWidget::on_water_scale_button_released(GdkEventButton* event) {
     if (event->button == 1 && profile) {
         double waterFactor = waterScale->get_value();
         if (profile->waterFactor != waterFactor) {
@@ -106,7 +106,7 @@ bool CustomCoffeeWidget::on_water_scale_button_released(GdkEventButton* event) {
     return false;
 }
 
-bool CustomCoffeeWidget::on_beans_scale_button_released(GdkEventButton* event) {
+bool EditCustomCoffeeWidget::on_beans_scale_button_released(GdkEventButton* event) {
     if (event->button == 1) {
         double beansFactor = beansScale->get_value();
         if (profile->beansFactor != beansFactor) {

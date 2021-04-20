@@ -8,7 +8,7 @@
 #include <gtkmm/frame.h>
 
 namespace ui::widgets {
-class CustomCoffeeWidget : public Gtk::Box {
+class EditCustomCoffeeWidget : public Gtk::Box {
  private:
     Gtk::Scale* waterScale{nullptr};
     Gtk::Scale* beansScale{nullptr};
@@ -19,7 +19,7 @@ class CustomCoffeeWidget : public Gtk::Box {
     bool cancel{false};
 
  public:
-    CustomCoffeeWidget();
+    EditCustomCoffeeWidget();
 
     void set_coffee_maker(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker);
     void set_user_profile(backend::storage::UserProfile* profile);

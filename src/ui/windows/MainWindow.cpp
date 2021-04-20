@@ -121,8 +121,8 @@ void MainWindow::prep_advanced_stack_page(Gtk::Stack* stack) {
 }
 
 void MainWindow::prep_custom_coffee_stack_page(Gtk::Stack* stack) {
-    stack->add(customCoffeeWidget, "custom_coffee", "Custom Coffee");
-    stack->set_visible_child(customCoffeeWidget);
+    stack->add(editCustomCoffeeWidget, "custom_coffee", "Custom Coffee");
+    stack->set_visible_child(editCustomCoffeeWidget);
 }
 
 void MainWindow::show_detect_coffee_maker() {
@@ -164,7 +164,7 @@ void MainWindow::load_user_profile(const std::string& cardId) {
 }
 
 void MainWindow::load_user_profile(backend::storage::UserProfile* profile) {
-    customCoffeeWidget.set_user_profile(profile);
+    editCustomCoffeeWidget.set_user_profile(profile);
     coffeeSelectionWidget.set_user_profile(profile);
     statusBarWidget.set_user_profile(profile);
 }
@@ -182,7 +182,7 @@ void MainWindow::on_inspector_clicked() {
 void MainWindow::on_coffee_maker_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
     this->coffeeMaker = std::move(coffeeMaker);
     coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
-    customCoffeeWidget.set_coffee_maker(this->coffeeMaker);
+    editCustomCoffeeWidget.set_coffee_maker(this->coffeeMaker);
     show_nfc_card_detection();
 }
 
@@ -242,6 +242,6 @@ void MainWindow::on_nfc_card_detected(const std::string& cardId) {
 }
 
 void MainWindow::on_edit_custom_coffee_clicked() {
-    stack->set_visible_child(customCoffeeWidget);
+    stack->set_visible_child(editCustomCoffeeWidget);
 }
 }  // namespace ui::windows

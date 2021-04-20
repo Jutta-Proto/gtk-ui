@@ -5,7 +5,7 @@
 #include "backend/storage/UserProfileStorage.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
 #include "ui/widgets/CoffeeSelectionWidget.hpp"
-#include "ui/widgets/CustomCoffeeWidget.hpp"
+#include "ui/widgets/EditCustomCoffeeWidget.hpp"
 #include "ui/widgets/NfcCardReaderWidget.hpp"
 #include "ui/widgets/StatusBarWidget.hpp"
 #include <jutta_proto/CoffeeMaker.hpp>
@@ -23,7 +23,7 @@ class MainWindow : public Gtk::Window {
     Gtk::Box* mainOverlayBox{nullptr};
     widgets::CoffeeMakerDetectionWidget* coffeeMakerDetectionWidget{nullptr};
     widgets::NfcCardReaderWidget* nfcCardDetectionWidget{nullptr};
-    widgets::CustomCoffeeWidget customCoffeeWidget{};
+    widgets::EditCustomCoffeeWidget editCustomCoffeeWidget{};
     widgets::CoffeeSelectionWidget coffeeSelectionWidget{};
     widgets::StatusBarWidget statusBarWidget{};
 
