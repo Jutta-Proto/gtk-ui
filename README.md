@@ -8,11 +8,11 @@ The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-cp
 
 
 ### Working Prototype with an JURA E6
-Click on the image to watch a short demo Video.  
-[<img src="https://user-images.githubusercontent.com/11741404/115422271-0a81ab00-a1fd-11eb-9858-a0602a9e9851.png" width="400">](https://home.in.tum.de/~sauterf/html-data/coffee_maker_demo_pi_new.MOV)
+https://user-images.githubusercontent.com/11741404/115424324-e757fb00-a1fe-11eb-8d50-90d94fd486d3.mp4
 
 ## Building
 ```bash
+$ pip3 install conan --user
 $ git clone https://github.com/Jutta-Proto/gtk-ui.git
 $ cd gtk-ui
 $ mkdir build
