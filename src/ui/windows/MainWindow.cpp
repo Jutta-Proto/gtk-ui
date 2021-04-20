@@ -39,7 +39,7 @@ void MainWindow::prep_window() {
     fullscreen();
 
     // Content:
-    Gtk::Stack* stack = Gtk::make_managed<Gtk::Stack>();
+    stack = Gtk::make_managed<Gtk::Stack>();
     prep_overview_stack_page(stack);
     prep_custom_coffee_stack_page(stack);
     prep_advanced_stack_page(stack);
@@ -91,6 +91,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
 
     // Predefined coffee:
     Gtk::ScrolledWindow* coffeeSelectionWindow = Gtk::make_managed<Gtk::ScrolledWindow>();
+    coffeeSelectionWidget.signal_edit_custom_coffee_clicked().connect(sigc::mem_fun(this, &MainWindow::on_edit_custom_coffee_clicked));
     coffeeSelectionWindow->add(coffeeSelectionWidget);
     coffeeSelectionWindow->set_policy(Gtk::PolicyType::POLICY_NEVER, Gtk::PolicyType::POLICY_AUTOMATIC);
     coffeeSelectionWindow->set_vexpand(true);
@@ -121,12 +122,13 @@ void MainWindow::prep_advanced_stack_page(Gtk::Stack* stack) {
 
 void MainWindow::prep_custom_coffee_stack_page(Gtk::Stack* stack) {
     stack->add(customCoffeeWidget, "custom_coffee", "Custom Coffee");
+    stack->set_visible_child(customCoffeeWidget);
 }
 
 void MainWindow::show_detect_coffee_maker() {
     if (!coffeeMakerDetectionWidget) {
         coffeeMakerDetectionWidget = Gtk::make_managed<widgets::CoffeeMakerDetectionWidget>();
-        coffeeMakerDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_signal_coffee_maker_detection_successfull));
+        coffeeMakerDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_coffee_maker_detection_successfull));
     }
     clear_overlay_children();
     mainOverlayBox->add(*coffeeMakerDetectionWidget);
@@ -136,7 +138,7 @@ void MainWindow::show_detect_coffee_maker() {
 void MainWindow::show_nfc_card_detection() {
     if (!nfcCardDetectionWidget) {
         nfcCardDetectionWidget = Gtk::make_managed<widgets::NfcCardReaderWidget>();
-        nfcCardDetectionWidget->signal_detection_canceled().connect(sigc::mem_fun(this, &MainWindow::on_signal_nfc_card_detection_canceled));
+        nfcCardDetectionWidget->signal_detection_canceled().connect(sigc::mem_fun(this, &MainWindow::on_nfc_card_detection_canceled));
     }
     clear_overlay_children();
     mainOverlayBox->add(*nfcCardDetectionWidget);
@@ -177,14 +179,14 @@ void MainWindow::on_inspector_clicked() {
     gtk_window_set_interactive_debugging(true);
 }
 
-void MainWindow::on_signal_coffee_maker_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
+void MainWindow::on_coffee_maker_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
     this->coffeeMaker = std::move(coffeeMaker);
     coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
     customCoffeeWidget.set_coffee_maker(this->coffeeMaker);
     show_nfc_card_detection();
 }
 
-void MainWindow::on_signal_nfc_card_detection_canceled() {
+void MainWindow::on_nfc_card_detection_canceled() {
     load_user_profile("");
     hide_overlay();
 }
@@ -237,5 +239,9 @@ void MainWindow::on_nfc_card_detected(const std::string& cardId) {
     hide_overlay();
     // Once a card has been detected, enter is being pressed. Skip this false activation:
     skipNextLogoutClicked = true;
+}
+
+void MainWindow::on_edit_custom_coffee_clicked() {
+    stack->set_visible_child(customCoffeeWidget);
 }
 }  // namespace ui::windows

@@ -17,6 +17,7 @@ namespace ui::windows {
 class MainWindow : public Gtk::Window {
  private:
     bool inFullScreen{false};
+    Gtk::Stack* stack{nullptr};
     Gtk::MenuButton* viewMoreBtn{nullptr};
     Gtk::Overlay mainOverlay{};
     Gtk::Box* mainOverlayBox{nullptr};
@@ -50,14 +51,14 @@ class MainWindow : public Gtk::Window {
 
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
-    void on_signal_coffee_maker_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker);
-    void on_signal_nfc_card_detection_successfull(const std::string& cardId);
-    void on_signal_nfc_card_detection_canceled();
+    void on_coffee_maker_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker);
+    void on_nfc_card_detection_canceled();
+    void on_nfc_card_detected(const std::string& cardId);
     void on_full_screen_clicked();
+    void on_edit_custom_coffee_clicked();
     void on_logout_clicked();
     void on_reconnect_clicked();
     bool on_key_pressed(GdkEventKey* event);
     bool on_window_state_changed(GdkEventWindowState* state);
-    void on_nfc_card_detected(const std::string& cardId);
 };
 }  // namespace ui::windows

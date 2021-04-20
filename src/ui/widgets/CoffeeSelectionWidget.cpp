@@ -61,6 +61,10 @@ void CoffeeSelectionWidget::set_coffee_maker(std::shared_ptr<backend::CoffeeMake
     this->coffeeMaker = std::move(coffeeMaker);
 }
 
+CoffeeSelectionWidget::type_signal_edit_custom_coffee_clicked CoffeeSelectionWidget::signal_edit_custom_coffee_clicked() {
+    return m_signal_edit_custom_coffee_clicked;
+}
+
 //-----------------------------Events:-----------------------------
 void CoffeeSelectionWidget::on_coffee_button_clicked(jutta_proto::CoffeeMaker::coffee_t coffee) {
     assert(coffeeMaker);
@@ -76,6 +80,6 @@ void CoffeeSelectionWidget::on_brew_custom_coffee_clicked(jutta_proto::CoffeeMak
 }
 
 void CoffeeSelectionWidget::on_edit_custom_coffee_clicked(jutta_proto::CoffeeMaker::coffee_t /*coffee*/) {
-    assert(coffeeMaker);
+    m_signal_edit_custom_coffee_clicked.emit();
 }
 }  // namespace ui::widgets
