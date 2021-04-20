@@ -12,13 +12,18 @@ class CoffeeButton : public Gtk::Button {
     using type_signal_clicked_sender = sigc::signal<void, jutta_proto::CoffeeMaker::coffee_t>;
 
  private:
+    Glib::RefPtr<Gdk::Pixbuf> imageBuf{nullptr};
+    Gtk::Box* contentBox{nullptr};
+    Gtk::Label* nameLabel{nullptr};
+    Gtk::Image* image{nullptr};
+
     jutta_proto::CoffeeMaker::coffee_t coffee;
 
     type_signal_clicked_sender m_signal_clicked_sender{};
     void on_button_clicked_wrapper();
 
  public:
-    CoffeeButton(const Glib::ustring& label, jutta_proto::CoffeeMaker::coffee_t coffee, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider);
+    CoffeeButton(const Glib::ustring& label, jutta_proto::CoffeeMaker::coffee_t coffee, const std::string& imageResourcePath, const Glib::RefPtr<Gtk::CssProvider>& cssProvider);
     CoffeeButton(CoffeeButton&& src) noexcept;
     CoffeeButton& operator=(CoffeeButton&& src) noexcept;
 
@@ -31,6 +36,6 @@ class CoffeeButton : public Gtk::Button {
     type_signal_clicked_sender signal_clicked_sender();
 
  private:
-    void prep_button(const Glib::ustring& label, const std::string& cssClass, const Glib::RefPtr<Gtk::CssProvider>& cssProvider);
+    void prep_button(const Glib::ustring& label, const std::string& imageResourcePath, const Glib::RefPtr<Gtk::CssProvider>& cssProvider);
 };
 }  // namespace ui::widgets

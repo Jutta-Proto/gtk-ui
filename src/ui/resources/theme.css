@@ -16,18 +16,6 @@
     background-color: @content_view_bg;
 }
 
-.coffee-button-coffee-background {
-    background-image: url("resource:///ui/coffee.png");
-}
-
-.coffee-button-coffee-gear-background {
-    background-image: url("resource:///ui/coffee_gear.png");
-}
-
-.coffee-button-espresso-background {
-    background-image: url("resource:///ui/espresso.png");
-}
-
 .coffee-beans-background {
     background-image: url("resource:///ui/background.jpg");
     background-size: cover;
