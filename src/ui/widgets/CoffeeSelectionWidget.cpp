@@ -46,7 +46,7 @@ void CoffeeSelectionWidget::add_custom_coffee_buttons(const Glib::RefPtr<Gtk::Cs
     CoffeeButton* brewCustom = Gtk::make_managed<CoffeeButton>("Custom Coffee", jutta_proto::CoffeeMaker::coffee_t::COFFEE, "coffee-button-coffee-background", cssProvider);
     brewCustom->signal_clicked_sender().connect(sigc::mem_fun(this, &CoffeeSelectionWidget::on_brew_custom_coffee_clicked));
     this->add(*brewCustom);
-    CoffeeButton* editCustom = Gtk::make_managed<CoffeeButton>("Edit\nCustom Coffee", jutta_proto::CoffeeMaker::coffee_t::COFFEE, "coffee-button-coffee-background", cssProvider);
+    CoffeeButton* editCustom = Gtk::make_managed<CoffeeButton>("Edit\nCustom Coffee", jutta_proto::CoffeeMaker::coffee_t::COFFEE, "coffee-button-coffee-gear-background", cssProvider);
     editCustom->signal_clicked_sender().connect(sigc::mem_fun(this, &CoffeeSelectionWidget::on_edit_custom_coffee_clicked));
     this->add(*editCustom);
 }
