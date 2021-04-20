@@ -4,11 +4,12 @@ The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-cp
 
 ## Example
 ### UI example
-![UI Example](https://user-images.githubusercontent.com/11741404/89994342-489af800-dc88-11ea-9a4e-c4407ce79a8d.png)
+![UI example image](https://user-images.githubusercontent.com/11741404/115422997-b925eb80-a1fd-11eb-8208-96093122b28e.png)
+
 
 ### Working Prototype with an JURA E6
-Click on the image to watch a short demo Video.
-[![Watch the video](https://user-images.githubusercontent.com/11741404/115422271-0a81ab00-a1fd-11eb-9858-a0602a9e9851.png)](https://home.in.tum.de/~sauterf/html-data/coffee_maker_demo_pi_new.MOV)
+Click on the image to watch a short demo Video.  
+[<img src="https://user-images.githubusercontent.com/11741404/115422271-0a81ab00-a1fd-11eb-9858-a0602a9e9851.png" width="400">](https://home.in.tum.de/~sauterf/html-data/coffee_maker_demo_pi_new.MOV)
 
 ## Building
 ```bash
