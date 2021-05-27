@@ -10,6 +10,8 @@ The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-cp
 ### Working Prototype with an JURA E6
 https://user-images.githubusercontent.com/11741404/115424324-e757fb00-a1fe-11eb-8d50-90d94fd486d3.mp4
 
+Instructions for building the prototype can be found here: https://github.com/Jutta-Proto/hardware-pi
+
 ## Building
 ```bash
 $ pip3 install conan --user
