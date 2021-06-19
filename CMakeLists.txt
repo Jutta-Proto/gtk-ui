@@ -30,9 +30,6 @@ jutta_ui_option(JUTTA_UI_STATIC_ANALYZE "Set to ON to enable the GCC 10 static a
 jutta_ui_option(JUTTA_UI_ENABLE_LINTING "Set to ON to enable clang linting. If enabled, JUTTA_UI_STATIC_ANALYZE has to be disabled." ON)
 message(STATUS "=======================================================")
 
-option(ENABLE_LINTING "Enables linting while building" ON)
-option(BUILD_TESTING "Build tests" ON)
-
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
