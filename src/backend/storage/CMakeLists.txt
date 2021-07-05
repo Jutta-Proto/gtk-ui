@@ -9,7 +9,7 @@ add_library(storage STATIC Metadata.cpp
                            UserProfileStorage.cpp
                            UserProfileStorage.hpp)
 
-target_link_libraries(storage PUBLIC logger nlohmann_json::nlohmann_json)
+target_link_libraries(storage PUBLIC logger nlohmann_json::nlohmann_json
+                              PRIVATE stdc++fs)
                               
-target_compile_features(storage PRIVATE cxx_std_17
-                                        cxx_constexpr)
+target_compile_features(storage PRIVATE cxx_std_17 cxx_constexpr)
