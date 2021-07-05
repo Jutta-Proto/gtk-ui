@@ -31,13 +31,13 @@ void CoffeeMakerDetection::start() {
 }
 
 void CoffeeMakerDetection::stop() {
-    if(!mainThread) {
+    if (!mainThread) {
         return;
     }
     SPDLOG_DEBUG("Stoping coffee maker detection...");
-    if(state == CoffeeMakerDetectionState::RUNNING) {
+    if (state == CoffeeMakerDetectionState::RUNNING) {
         set_state(CoffeeMakerDetectionState::CANCELD);
-    } 
+    }
     mainThread->join();
     mainThread = std::nullopt;
     SPDLOG_DEBUG("Stoped coffee maker detection.");
@@ -72,7 +72,7 @@ void CoffeeMakerDetection::run() {
             }
             if (!readBuffer.empty()) {
                 std::string resultRead = jutta_proto::JuttaConnection::vec_to_string(readBuffer);
-                if (resultRead.starts_with("ty:") && resultRead.ends_with("\r\n")) {
+                if (starts_with(resultRead, "ty:") && ends_with(resultRead, "\r\n")) {
                     if (state == CoffeeMakerDetectionState::RUNNING) {
                         // Remove 'ty:' and '\r\n':
                         version = resultRead.substr(3, resultRead.length() - 3 - 2);
@@ -81,7 +81,7 @@ void CoffeeMakerDetection::run() {
                         return;
                     }
                 } else {
-                    SPDLOG_DEBUG("Invalid string read: '{}' with starts_with: '{}', ends_with: '{}'", resultRead, resultRead.starts_with("ty:"), resultRead.ends_with("\r\n"));
+                    SPDLOG_DEBUG("Invalid string read: '{}' with starts_with: '{}', ends_with: '{}'", resultRead, starts_with(resultRead, "ty:"), ends_with(resultRead, "\r\n"));
                 }
                 readBuffer.clear();
             }
@@ -113,6 +113,30 @@ const std::string& CoffeeMakerDetection::get_version() const {
 
 CoffeeMakerDetection::type_signal_state_changed CoffeeMakerDetection::signal_state_changed() {
     return m_signal_state_changed;
+}
+
+bool CoffeeMakerDetection::starts_with(const std::string& s, const std::string& prefix) {
+    if (s.length() < prefix.length()) {
+        return false;
+    }
+    for (size_t i = 0; i < prefix.length(); i++) {
+        if (s[i] != prefix[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool CoffeeMakerDetection::ends_with(const std::string& s, const std::string& postfix) {
+    if (s.length() < postfix.length()) {
+        return false;
+    }
+    for (size_t i = 0; i < postfix.length(); i++) {
+        if (s[s.length() - postfix.length() + i] != postfix[i]) {
+            return false;
+        }
+    }
+    return true;
 }
 
 //-----------------------------Events:-----------------------------

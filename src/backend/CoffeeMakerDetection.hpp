@@ -1,11 +1,11 @@
 #pragma once
 
 #include <jutta_proto/JuttaConnection.hpp>
+#include <memory>
 #include <optional>
 #include <string>
 #include <thread>
 #include <gtkmm.h>
-#include <memory>
 
 namespace backend {
 class CoffeeMakerDetection {
@@ -46,6 +46,9 @@ class CoffeeMakerDetection {
  private:
     void run();
     void set_state(CoffeeMakerDetectionState newState);
+
+    static bool starts_with(const std::string& s, const std::string& prefix);
+    static bool ends_with(const std::string& s, const std::string& postfix);
 
     //-----------------------------Events:-----------------------------
     void on_notification_from_worker_thread();
