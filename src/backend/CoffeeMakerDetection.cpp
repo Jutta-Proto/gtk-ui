@@ -2,9 +2,11 @@
 #include "jutta_proto/JuttaCommands.hpp"
 #include "jutta_proto/JuttaConnection.hpp"
 #include <cassert>
+#include <chrono>
 #include <logger/Logger.hpp>
 #include <memory>
 #include <optional>
+#include <thread>
 #include <spdlog/spdlog.h>
 #include <sys/stat.h>
 
@@ -57,33 +59,28 @@ void CoffeeMakerDetection::run() {
     }
 
     std::vector<uint8_t> readBuffer{};
+    std::shared_ptr<std::string> buffer = nullptr;
     while (state == CoffeeMakerDetectionState::RUNNING) {
         try {
-            // Send:
-            if (!connection->write_decoded(jutta_proto::JUTTA_GET_TYPE)) {
-                SPDLOG_WARN("Failed to write to coffee maker to get type.");
+            buffer = connection->write_decoded_with_response("TY:", std::chrono::milliseconds{1000});
+            if (!buffer) {
+                SPDLOG_WARN("Failed to read/write to coffee maker to get type...");
+                std::this_thread::sleep_for(std::chrono::milliseconds{500});
                 continue;
             }
 
-            // Read:
-            if (!connection->read_decoded(readBuffer)) {
-                SPDLOG_TRACE("Nothing to read from the coffee maker.");
-                continue;
-            }
-            if (!readBuffer.empty()) {
-                std::string resultRead = jutta_proto::JuttaConnection::vec_to_string(readBuffer);
-                if (starts_with(resultRead, "ty:") && ends_with(resultRead, "\r\n")) {
-                    if (state == CoffeeMakerDetectionState::RUNNING) {
-                        // Remove 'ty:' and '\r\n':
-                        version = resultRead.substr(3, resultRead.length() - 3 - 2);
-                        SPDLOG_INFO("Successfully found the coffee maker: {}", version);
-                        set_state(CoffeeMakerDetectionState::SUCCESS);
-                        return;
-                    }
-                } else {
-                    SPDLOG_DEBUG("Invalid string read: '{}' with starts_with: '{}', ends_with: '{}'", resultRead, starts_with(resultRead, "ty:"), ends_with(resultRead, "\r\n"));
+            if (starts_with(*buffer, "ty:") && ends_with(*buffer, "\r\n")) {
+                if (state == CoffeeMakerDetectionState::RUNNING) {
+                    // Remove 'ty:' and '\r\n':
+                    version = buffer->substr(3, buffer->length() - 3 - 2);
+                    SPDLOG_INFO("Successfully found the coffee maker: {}", version);
+                    set_state(CoffeeMakerDetectionState::SUCCESS);
+                    return;
                 }
-                readBuffer.clear();
+            } else {
+                SPDLOG_DEBUG("Invalid string read: '{}' with starts_with: '{}', ends_with: '{}'", *buffer, starts_with(*buffer, "ty:"), ends_with(*buffer, "\r\n"));
+                std::this_thread::sleep_for(std::chrono::milliseconds{500});
+                continue;
             }
         } catch (const std::exception& ex) {
             lastError = std::string(ex.what());
