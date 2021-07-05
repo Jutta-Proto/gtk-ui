@@ -62,7 +62,7 @@ void CoffeeMakerDetection::run() {
     std::shared_ptr<std::string> buffer = nullptr;
     while (state == CoffeeMakerDetectionState::RUNNING) {
         try {
-            buffer = connection->write_decoded_with_response("TY:", std::chrono::milliseconds{1000});
+            buffer = connection->write_decoded_with_response("TY:\r\n", std::chrono::milliseconds{1000});
             if (!buffer) {
                 SPDLOG_WARN("Failed to read/write to coffee maker to get type...");
                 std::this_thread::sleep_for(std::chrono::milliseconds{500});
