@@ -4,7 +4,6 @@
 
 namespace backend::storage {
 
-UserProfile::UserProfile() : cardId() {}
 UserProfile::UserProfile(std::string&& cardId) : cardId(std::move(cardId)) {}
 
 bool UserProfile::operator==(const UserProfile& other) const {

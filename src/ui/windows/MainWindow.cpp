@@ -21,7 +21,7 @@
 #include <spdlog/spdlog.h>
 
 namespace ui::windows {
-MainWindow::MainWindow() : nfcCardReader() {
+MainWindow::MainWindow() {
     prep_window();
     nfcCardReader.signal_card_detected().connect(sigc::mem_fun(this, &MainWindow::on_nfc_card_detected));
     nfcCardReader.start();

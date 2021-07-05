@@ -31,7 +31,7 @@ struct UserProfile {
      **/
     double tempFactor{1.0};
 
-    UserProfile();
+    UserProfile() = default;
     explicit UserProfile(std::string&& cardId);
     bool operator==(const UserProfile& other) const;
 };
