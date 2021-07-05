@@ -75,8 +75,8 @@ void MainWindow::prep_window() {
 
     show_all();
 
-    // show_detect_coffee_maker();
-    show_nfc_card_detection();
+    show_detect_coffee_maker();
+    // show_nfc_card_detection();
 }
 
 void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
