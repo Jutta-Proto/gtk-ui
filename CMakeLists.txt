@@ -92,6 +92,7 @@ endif()
 conan_cmake_run(REQUIRES catch2/2.13.4
                          nlohmann_json/3.9.1
                          spdlog/1.8.5
+                         cryptopp/8.5.0
                 GENERATORS cmake_find_package
                 BUILD missing)
 
@@ -104,6 +105,7 @@ conan_cmake_install(PATH_OR_REFERENCE .
 find_package(Catch2 REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(cryptopp REQUIRED)
 
 FetchContent_Declare(jutta_proto
                      GIT_REPOSITORY         https://github.com/Jutta-Proto/protocol-cpp.git
