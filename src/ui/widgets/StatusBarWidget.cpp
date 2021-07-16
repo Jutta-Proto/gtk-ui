@@ -14,7 +14,11 @@ void StatusBarWidget::set_user_profile(backend::storage::UserProfile* profile) {
         if (profile->cardId.empty()) {
             userIdLabel.set_label("default");
         } else {
-            userIdLabel.set_label(profile->cardId);
+            std::string userId = profile->cardId;
+            if (userId.length() > 10) {
+                userId = userId.substr(0, 10);
+            }
+            userIdLabel.set_label(userId);
         }
     } else {
         userIdLabel.set_label("-");

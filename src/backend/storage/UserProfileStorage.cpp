@@ -1,6 +1,11 @@
 #include "UserProfileStorage.hpp"
 #include <cstddef>
 #include <functional>
+#include <string>
+#include <cryptopp/config_int.h>
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/hex.h>
+#include <cryptopp/sha.h>
 
 namespace backend::storage {
 
@@ -25,9 +30,11 @@ UserProfileStorage::UserProfileStorage(const std::filesystem::path& settings_fil
 }
 
 UserProfile* UserProfileStorage::get_profile(std::string&& cardId) {
-    size_t hash = std::hash<std::string>{}(cardId);
+    // For privacy reasons do not work/store the card id directly:
+    std::string cardHash = sha_256(cardId);
+    size_t hash = std::hash<std::string>{}(cardHash);
     if (profiles.find(hash) == profiles.end()) {
-        profiles[hash] = UserProfile(std::move(cardId));
+        profiles[hash] = UserProfile(std::move(cardHash));
         write_profiles();
     }
     return &(profiles[hash]);
@@ -57,5 +64,27 @@ void from_json(const nlohmann::json& j, UserProfile& p) {
     j.at("beansFactor").get_to(p.beansFactor);
     j.at("waterFactor").get_to(p.waterFactor);
     j.at("tempFactor").get_to(p.tempFactor);
+}
+
+const std::string sha_256(const std::string& s) {
+    CryptoPP::SHA256 hash;
+    // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
+    hash.Update(reinterpret_cast<const CryptoPP::byte*>(s.data()), s.length());
+    std::string decoded;
+    decoded.resize(hash.DigestSize());
+    // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
+    hash.Final(reinterpret_cast<CryptoPP::byte*>(decoded.data()));
+    CryptoPP::HexEncoder enc;
+    // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
+    enc.Put(reinterpret_cast<const CryptoPP::byte*>(decoded.data()), decoded.size());
+    enc.MessageEnd();
+    std::string encoded;
+    CryptoPP::lword l = enc.MaxRetrievable();
+    if (l) {
+        encoded.resize(l);
+        // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
+        enc.Get(reinterpret_cast<CryptoPP::byte*>(encoded.data()), encoded.size());
+    }
+    return encoded;
 }
 }  // namespace backend::storage
