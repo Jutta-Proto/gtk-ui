@@ -51,6 +51,8 @@ class NfcCardReader {
     void run();
     void set_state(NfcCardReaderState newState);
 
+    static const std::string sha_256(const std::string& s);
+
     //-----------------------------Events:-----------------------------
     void on_state_changed_notification_from_worker_thread();
     void on_card_detected_notification_from_worker_thread();

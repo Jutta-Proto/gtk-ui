@@ -12,6 +12,6 @@ add_library(backend STATIC CoffeeMakerDetection.hpp
                            FixedSizeStack.hpp)
 
 target_link_libraries(backend PUBLIC jutta_proto
-                              PRIVATE logger PkgConfig::GTKMM)
+                              PRIVATE logger PkgConfig::GTKMM cryptopp::cryptopp)
 
 install(TARGETS backend)

@@ -64,5 +64,4 @@ struct UserProfileStorage {
 UserProfileStorage& get_user_profile_storage_instance();
 void to_json(nlohmann::json& j, const UserProfile& p);
 void from_json(const nlohmann::json& j, UserProfile& p);
-const std::string sha_256(const std::string& s);
 }  // namespace backend::storage

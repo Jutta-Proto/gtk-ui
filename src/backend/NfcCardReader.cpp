@@ -7,6 +7,10 @@
 #include <logger/Logger.hpp>
 #include <memory>
 #include <optional>
+#include <cryptopp/config_int.h>
+#include <cryptopp/cryptlib.h>
+#include <cryptopp/hex.h>
+#include <cryptopp/sha.h>
 #include <spdlog/spdlog.h>
 #include <sys/stat.h>
 
@@ -84,13 +88,37 @@ void NfcCardReader::on_new_char_input(char c) {
         stack.push(c);
         lastChar = std::chrono::steady_clock::now();
         if (stack.size() >= 10) {
-            lastCardId = stack.pop();
+            // For privacy reasons do not work/store the card id directly:
+            std::string cardid = stack.pop();
+            lastCardId = sha_256(cardid);
             stackMutex.unlock();
             SPDLOG_INFO("Card with ID '{}' detected.", lastCardId);
             cardDetectedDisp.emit();
         }
         stackMutex.unlock();
     }
+}
+
+const std::string NfcCardReader::sha_256(const std::string& s) {
+    CryptoPP::SHA256 hash;
+    // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
+    hash.Update(reinterpret_cast<const CryptoPP::byte*>(s.data()), s.length());
+    std::string decoded;
+    decoded.resize(hash.DigestSize());
+    // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
+    hash.Final(reinterpret_cast<CryptoPP::byte*>(decoded.data()));
+    CryptoPP::HexEncoder enc;
+    // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
+    enc.Put(reinterpret_cast<const CryptoPP::byte*>(decoded.data()), decoded.size());
+    enc.MessageEnd();
+    std::string encoded;
+    CryptoPP::lword l = enc.MaxRetrievable();
+    if (l) {
+        encoded.resize(l);
+        // NOLINTNEXTLINE (cppcoreguidelines-pro-type-reinterpret-cast)
+        enc.Get(reinterpret_cast<CryptoPP::byte*>(encoded.data()), encoded.size());
+    }
+    return encoded;
 }
 
 //-----------------------------Events:-----------------------------
