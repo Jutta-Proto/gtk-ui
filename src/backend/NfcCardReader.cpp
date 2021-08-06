@@ -87,7 +87,7 @@ void NfcCardReader::on_new_char_input(char c) {
         stackMutex.lock();
         stack.push(c);
         lastChar = std::chrono::steady_clock::now();
-        if (stack.size() >= 10) {
+        if (stack.size() >= 8) {
             // For privacy reasons do not work/store the card id directly:
             std::string cardid = stack.pop();
             lastCardId = sha_256(cardid);

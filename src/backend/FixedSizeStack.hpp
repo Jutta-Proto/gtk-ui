@@ -7,7 +7,7 @@
 namespace backend {
 class FixedSizeStack {
  public:
-    static constexpr size_t MAX_SIZE = 10;
+    static constexpr size_t MAX_SIZE = 8;
 
  private:
     /**
