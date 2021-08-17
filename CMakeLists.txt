@@ -5,7 +5,7 @@ set(PROJECT_DESCRIPTION "An unofficial UI to control JURA coffee makers.")
 project("Jutta_UI" 
             VERSION 0.0.0
             DESCRIPTION "${PROJECT_DESCRIPTION}"
-            HOMEPAGE_URL "https://github.com/Jutta-Proto/gtk4-ui")
+            HOMEPAGE_URL "https://github.com/Jutta-Proto/gtk-ui")
 set(VERSION_NAME "dev")
 
 set(CMAKE_CXX_STANDARD 20)
