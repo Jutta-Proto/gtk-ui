@@ -1,4 +1,5 @@
 #include "CoffeeMakerStatusWidget.hpp"
+#include <cassert>
 #include <cstddef>
 #include <string>
 #include <gtkmm/button.h>
@@ -14,6 +15,10 @@ void CoffeeMakerStatusWidget::prep_button() {
     // Content
     set_label("✅");
     statusPopover.add(statusPopoverLabel);
+    statusPopoverLabel.set_margin_start(5);
+    statusPopoverLabel.set_margin_end(5);
+    statusPopoverLabel.set_margin_top(5);
+    statusPopoverLabel.set_margin_bottom(5);
     statusPopoverLabel.show_all();
 }
 
@@ -29,15 +34,17 @@ void CoffeeMakerStatusWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::C
 void CoffeeMakerStatusWidget::on_alerts_changed(const std::vector<const jutta_bt_proto::Alert*>& alerts) {
     size_t blockingCount = 0;
     size_t miscCount = 0;
-    std::string statusBlockingText = "<span font_weight='bold'>Blocking:</span>\n";
-    std::string statusMiscText = "<span font_weight='bold'>Misc:</span>\n";
+    std::string statusBlockingText = "<span font_weight='bold'>Blocking:</span>";
+    std::string statusMiscText = "<span font_weight='bold'>Misc:</span>";
     for (const jutta_bt_proto::Alert* alert : alerts) {
+        assert(alert);
+        continue;
         if (alert->type == "block") {
             blockingCount++;
-            statusBlockingText += "* " + alert->name + '\n';
+            statusBlockingText += "\n* " + alert->name;
         } else {
             miscCount++;
-            statusMiscText += "* " + alert->name + '\n';
+            statusMiscText += "\n* " + alert->name;
         }
     }
 
