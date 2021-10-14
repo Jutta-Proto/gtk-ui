@@ -30,9 +30,9 @@ jutta_ui_option(JUTTA_UI_STATIC_ANALYZE "Set to ON to enable the GCC 10 static a
 jutta_ui_option(JUTTA_UI_ENABLE_LINTING "Set to ON to enable clang linting. If enabled, JUTTA_UI_STATIC_ANALYZE has to be disabled." OFF)
 message(STATUS "=======================================================")
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_BINARY_DIR})
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 include(sanitizer)
 include(gcc_analyze)
@@ -107,14 +107,10 @@ find_package(nlohmann_json REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(cryptopp REQUIRED)
 
-FetchContent_Declare(jutta_proto
-                     GIT_REPOSITORY         https://github.com/Jutta-Proto/protocol-cpp.git
-                     GIT_TAG main
-                     USES_TERMINAL_DOWNLOAD TRUE)   # <---- This is needed only for Ninja to show download progress
-set(JUTTA_PROTO_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
-set(JUTTA_PROTO_STATIC_ANALYZE OFF CACHE INTERNAL "" FORCE)
-set(JUTTA_PROTO_ENABLE_LINTING OFF CACHE INTERNAL "" FORCE)
-FetchContent_MakeAvailable(jutta_proto)
+FetchContent_Declare(jutta_bt_proto
+                     GIT_REPOSITORY https://github.com/Jutta-Proto/protocol-bt-cpp.git
+                     GIT_TAG main)
+FetchContent_MakeAvailable(jutta_bt_proto)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
