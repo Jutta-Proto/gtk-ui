@@ -13,5 +13,5 @@ add_library(ui_widgets STATIC CoffeeSelectionWidget.hpp
                               StatusBarWidget.cpp
                               StatusBarWidget.hpp)
 
-target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM
+target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM jutta_bt_proto
                                  PRIVATE backend storage)

@@ -181,7 +181,7 @@ void MainWindow::on_inspector_clicked() {
     gtk_window_set_interactive_debugging(true);
 }
 
-void MainWindow::on_coffee_maker_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker) {
+void MainWindow::on_coffee_maker_detection_successfull(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
     this->coffeeMaker = std::move(coffeeMaker);
     coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
     show_nfc_card_detection();

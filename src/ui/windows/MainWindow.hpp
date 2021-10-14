@@ -1,6 +1,5 @@
 #pragma once
 
-#include "backend/CoffeeMakerWrapper.hpp"
 #include "backend/NfcCardReader.hpp"
 #include "backend/storage/UserProfileStorage.hpp"
 #include "ui/widgets/CoffeeMakerDetectionWidget.hpp"
@@ -8,7 +7,7 @@
 #include "ui/widgets/EditCustomCoffeeWidget.hpp"
 #include "ui/widgets/NfcCardReaderWidget.hpp"
 #include "ui/widgets/StatusBarWidget.hpp"
-#include <jutta_proto/CoffeeMaker.hpp>
+#include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <gtkmm.h>
 #include <gtkmm/label.h>
@@ -27,7 +26,7 @@ class MainWindow : public Gtk::Window {
     widgets::CoffeeSelectionWidget coffeeSelectionWidget{};
     widgets::StatusBarWidget statusBarWidget{};
 
-    std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker{nullptr};
+    std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker{nullptr};
     backend::NfcCardReader nfcCardReader{};
     bool skipNextLogoutClicked{false};
 
@@ -51,7 +50,7 @@ class MainWindow : public Gtk::Window {
 
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
-    void on_coffee_maker_detection_successfull(std::shared_ptr<backend::CoffeeMakerWrapper> coffeeMaker);
+    void on_coffee_maker_detection_successfull(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker);
     void on_nfc_card_detection_canceled();
     void on_nfc_card_detected(const std::string& cardId);
     void on_full_screen_clicked();

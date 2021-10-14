@@ -1,8 +1,7 @@
 #pragma once
 
 #include "backend/CoffeeMakerDetection.hpp"
-#include "backend/CoffeeMakerWrapper.hpp"
-#include <jutta_proto/CoffeeMaker.hpp>
+#include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <gtkmm.h>
 #include <gtkmm/button.h>
@@ -13,7 +12,7 @@ namespace ui::widgets {
 class CoffeeMakerDetectionWidget : public Gtk::Frame {
  private:
     Gtk::Button* actionBtn{nullptr};
-    Gtk::Entry* serialPort{nullptr};
+    Gtk::Entry* btName{nullptr};
     Gtk::Spinner* actionSpinner{nullptr};
     Gtk::InfoBar* errorBar{nullptr};
     Gtk::Box* errorBarBox{nullptr};
@@ -22,7 +21,7 @@ class CoffeeMakerDetectionWidget : public Gtk::Frame {
 
     std::unique_ptr<backend::CoffeeMakerDetection> detection{nullptr};
 
-    using type_signal_detection_successfull = sigc::signal<void, std::shared_ptr<backend::CoffeeMakerWrapper>>;
+    using type_signal_detection_successfull = sigc::signal<void, std::shared_ptr<jutta_bt_proto::CoffeeMaker>>;
     type_signal_detection_successfull m_signal_detection_successfull;
 
  public:

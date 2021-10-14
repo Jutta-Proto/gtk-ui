@@ -4,16 +4,16 @@
 #include <gtkmm/label.h>
 
 namespace ui::widgets {
-CoffeeButton::CoffeeButton(const Glib::ustring& label, jutta_proto::CoffeeMaker::coffee_t coffee, const std::string& imageResourcePath, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) : coffee(coffee) {
+CoffeeButton::CoffeeButton(const Glib::ustring& label, const jutta_bt_proto::Product* product, const std::string& imageResourcePath, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) : product(product) {
     prep_button(label, imageResourcePath, cssProvider);
 }
 
-CoffeeButton::CoffeeButton(CoffeeButton&& src) noexcept : Gtk::Button(std::move(src)), coffee(src.coffee) {
+CoffeeButton::CoffeeButton(CoffeeButton&& src) noexcept : Gtk::Button(std::move(src)), product(src.product) {
     signal_clicked().connect(sigc::mem_fun(this, &CoffeeButton::on_button_clicked_wrapper));
 }
 
 CoffeeButton& CoffeeButton::operator=(CoffeeButton&& src) noexcept {
-    coffee = src.coffee;
+    product = src.product;
     Gtk::Button::operator=(std::move(src));
     return *this;
 }
@@ -48,6 +48,6 @@ CoffeeButton::type_signal_clicked_sender CoffeeButton::signal_clicked_sender() {
 }
 
 void CoffeeButton::on_button_clicked_wrapper() {
-    m_signal_clicked_sender.emit(coffee);
+    m_signal_clicked_sender.emit(product);
 }
 }  // namespace ui::widgets

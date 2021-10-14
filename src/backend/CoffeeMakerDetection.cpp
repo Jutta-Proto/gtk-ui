@@ -1,8 +1,9 @@
 #include "CoffeeMakerDetection.hpp"
-#include "jutta_proto/JuttaCommands.hpp"
-#include "jutta_proto/JuttaConnection.hpp"
+#include <bt/BLEDevice.hpp>
+#include <bt/BLEHelper.hpp>
 #include <cassert>
 #include <chrono>
+#include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <logger/Logger.hpp>
 #include <memory>
 #include <optional>
@@ -11,12 +12,13 @@
 #include <sys/stat.h>
 
 namespace backend {
-CoffeeMakerDetection::CoffeeMakerDetection(std::string&& device) : connection(std::make_unique<jutta_proto::JuttaConnection>(std::move(device))) {
+CoffeeMakerDetection::CoffeeMakerDetection(std::string&& btName) : btName(std::move(btName)) {
     disp.connect(sigc::mem_fun(*this, &CoffeeMakerDetection::on_notification_from_worker_thread));
 }
 
 CoffeeMakerDetection::~CoffeeMakerDetection() {
     stop();
+    try_join();
 }
 
 void CoffeeMakerDetection::set_state(CoffeeMakerDetectionState newState) {
@@ -27,9 +29,18 @@ void CoffeeMakerDetection::set_state(CoffeeMakerDetectionState newState) {
 }
 
 void CoffeeMakerDetection::start() {
+    try_join();
     assert(!mainThread);
     SPDLOG_DEBUG("Starting coffee maker detection...");
+    canceled = false;
     mainThread = std::make_optional<std::thread>(&CoffeeMakerDetection::run, this);
+}
+
+void CoffeeMakerDetection::try_join() {
+    if (mainThread) {
+        mainThread->join();
+        mainThread = std::nullopt;
+    }
 }
 
 void CoffeeMakerDetection::stop() {
@@ -37,58 +48,35 @@ void CoffeeMakerDetection::stop() {
         return;
     }
     SPDLOG_DEBUG("Stoping coffee maker detection...");
+    canceled = true;
     if (state == CoffeeMakerDetectionState::RUNNING) {
         set_state(CoffeeMakerDetectionState::CANCELD);
     }
-    mainThread->join();
-    mainThread = std::nullopt;
-    SPDLOG_DEBUG("Stoped coffee maker detection.");
-    set_state(CoffeeMakerDetectionState::NOT_RUNNING);
 }
 
 void CoffeeMakerDetection::run() {
     set_state(CoffeeMakerDetectionState::RUNNING);
     SPDLOG_DEBUG("Coffee maker detection started.");
-    try {
-        connection->init();
-    } catch (const std::exception& ex) {
-        lastError = std::string(ex.what());
-        SPDLOG_ERROR("Failed to initialize the coffee maker connection with: {}", lastError);
-        set_state(CoffeeMakerDetectionState::ERROR);
-        return;
-    }
-
-    std::vector<uint8_t> readBuffer{};
-    std::shared_ptr<std::string> buffer = nullptr;
     while (state == CoffeeMakerDetectionState::RUNNING) {
         try {
-            buffer = connection->write_decoded_with_response("TY:\r\n", std::chrono::milliseconds{1000});
-            if (!buffer) {
-                SPDLOG_WARN("Failed to read/write to coffee maker to get type...");
+            std::shared_ptr<bt::ScanArgs> result = bt::scan_for_device(std::string{btName}, &canceled);
+            if (!result) {
+                SPDLOG_INFO("No coffee maker found. Sleeping...");
                 std::this_thread::sleep_for(std::chrono::milliseconds{500});
                 continue;
             }
-
-            if (starts_with(*buffer, "ty:") && ends_with(*buffer, "\r\n")) {
-                if (state == CoffeeMakerDetectionState::RUNNING) {
-                    // Remove 'ty:' and '\r\n':
-                    version = buffer->substr(3, buffer->length() - 3 - 2);
-                    SPDLOG_INFO("Successfully found the coffee maker: {}", version);
-                    set_state(CoffeeMakerDetectionState::SUCCESS);
-                    return;
-                }
-            } else {
-                SPDLOG_DEBUG("Invalid string read: '{}' with starts_with: '{}', ends_with: '{}'", *buffer, starts_with(*buffer, "ty:"), ends_with(*buffer, "\r\n"));
-                std::this_thread::sleep_for(std::chrono::milliseconds{500});
-                continue;
-            }
+            SPDLOG_INFO("Coffee maker found.");
+            coffeeMaker = std::make_shared<jutta_bt_proto::CoffeeMaker>(std::string{result->name}, std::string{result->addr});
+            set_state(CoffeeMakerDetectionState::SUCCESS);
+            return;
         } catch (const std::exception& ex) {
             lastError = std::string(ex.what());
-            SPDLOG_ERROR("Failed to read from the serial connection with: {}", lastError);
+            SPDLOG_ERROR("Failed to discover BT devices with: {}", lastError);
             set_state(CoffeeMakerDetectionState::ERROR);
             return;
         }
     }
+    set_state(CoffeeMakerDetectionState::NOT_RUNNING);
     SPDLOG_INFO("Coffee maker detection got canceled.");
 }
 
@@ -96,16 +84,12 @@ CoffeeMakerDetection::CoffeeMakerDetectionState CoffeeMakerDetection::get_state(
     return state;
 }
 
-std::unique_ptr<jutta_proto::JuttaConnection>&& CoffeeMakerDetection::get_connection() {
-    return std::move(connection);
+std::shared_ptr<jutta_bt_proto::CoffeeMaker>&& CoffeeMakerDetection::get_coffee_maker() {
+    return std::move(coffeeMaker);
 }
 
 const std::string& CoffeeMakerDetection::get_last_error() const {
     return lastError;
-}
-
-const std::string& CoffeeMakerDetection::get_version() const {
-    return version;
 }
 
 CoffeeMakerDetection::type_signal_state_changed CoffeeMakerDetection::signal_state_changed() {

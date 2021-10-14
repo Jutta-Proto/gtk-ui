@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 set(MAIN_EXECUTABLE ${PROJECT_NAME})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 add_subdirectory(backend)
 add_subdirectory(ui)

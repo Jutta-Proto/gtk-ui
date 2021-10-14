@@ -1,8 +1,8 @@
 #include "CoffeeMakerDetectionWidget.hpp"
-#include "jutta_proto/CoffeeMaker.hpp"
 #include "ui/utils/UiUtils.hpp"
 #include <cassert>
 #include <cstddef>
+#include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <optional>
 #include <gtkmm/box.h>
@@ -45,7 +45,7 @@ void CoffeeMakerDetectionWidget::prep_widget() {
     mainBox->add(*errorBarBox);
 
     // Content:
-    Gtk::Label* infoLabel = Gtk::make_managed<Gtk::Label>("Enter the path to the serial port to use:");
+    Gtk::Label* infoLabel = Gtk::make_managed<Gtk::Label>("Enter BT name of the coffee maker:");
     infoLabel->set_line_wrap(true);
     mainBox->add(*infoLabel);
 
@@ -53,15 +53,15 @@ void CoffeeMakerDetectionWidget::prep_widget() {
     portBox->set_margin_top(10);
     actionSpinner = Gtk::make_managed<Gtk::Spinner>();
     portBox->add(*actionSpinner);
-    serialPort = Gtk::make_managed<Gtk::Entry>();
-    serialPort->set_hexpand(true);
-    serialPort->set_placeholder_text("/dev/serial0");
-    serialPort->get_buffer()->set_text("/dev/serial0");
-    portBox->add(*serialPort);
+    btName = Gtk::make_managed<Gtk::Entry>();
+    btName->set_hexpand(true);
+    btName->set_placeholder_text("TT214H BlueFrog");
+    btName->get_buffer()->set_text("TT214H BlueFrog");
+    portBox->add(*btName);
     mainBox->add(*portBox);
 
     // Buttons:
-    actionBtn = Gtk::make_managed<Gtk::Button>("Detect");
+    actionBtn = Gtk::make_managed<Gtk::Button>("Connect");
     actionBtn->set_margin_top(10);
     actionBtn->signal_clicked().connect(sigc::mem_fun(*this, &CoffeeMakerDetectionWidget::on_action_btn_click));
     mainBox->add(*actionBtn);
@@ -80,7 +80,7 @@ void CoffeeMakerDetectionWidget::start_detecting() {
     }
 
     assert(!detection);
-    detection = std::make_unique<backend::CoffeeMakerDetection>(std::string(serialPort->get_buffer()->get_text()));
+    detection = std::make_unique<backend::CoffeeMakerDetection>(std::string(btName->get_buffer()->get_text()));
     detection->signal_state_changed().connect(sigc::mem_fun(*this, &CoffeeMakerDetectionWidget::on_detection_state_changed));
     detection->start();
 }
@@ -119,13 +119,13 @@ void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::Coffe
             actionBtn->set_label("Success!");
             actionSpinner->stop();
             // Emit the signal handler:
-            m_signal_detection_successfull.emit(std::make_shared<backend::CoffeeMakerWrapper>(std::string(detection->get_version()), detection->get_connection()));
+            m_signal_detection_successfull.emit(detection->get_coffee_maker());
             break;
 
         case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::ERROR:
             detecting = false;
-            serialPort->set_sensitive(true);
-            actionBtn->set_label("Detect");
+            btName->set_sensitive(true);
+            actionBtn->set_label("Connect");
             actionBtn->set_sensitive(true);
             actionSpinner->stop();
 
@@ -135,7 +135,7 @@ void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::Coffe
 
         case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::CANCELD:
             detecting = false;
-            serialPort->set_sensitive(false);
+            btName->set_sensitive(false);
             actionBtn->set_label("Canceling...");
             actionBtn->set_sensitive(false);
             actionSpinner->start();
@@ -149,8 +149,8 @@ void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::Coffe
 
         case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::NOT_RUNNING:
             detecting = false;
-            serialPort->set_sensitive(true);
-            actionBtn->set_label("Detect");
+            btName->set_sensitive(true);
+            actionBtn->set_label("Connect");
             actionBtn->set_sensitive(true);
             actionSpinner->stop();
             break;
@@ -158,7 +158,7 @@ void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::Coffe
         default:
             break;
     }
-    serialPort->set_sensitive(true);
+    btName->set_sensitive(true);
 }
 
 void CoffeeMakerDetectionWidget::on_error_bar_response(int /*response*/) {
@@ -171,7 +171,7 @@ void CoffeeMakerDetectionWidget::on_action_btn_click() {
         stop_detecting();
     } else {
         actionBtn->set_sensitive(true);
-        serialPort->set_sensitive(false);
+        btName->set_sensitive(false);
         actionSpinner->start();
         start_detecting();
     }

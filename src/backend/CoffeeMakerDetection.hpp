@@ -1,6 +1,6 @@
 #pragma once
 
-#include <jutta_proto/JuttaConnection.hpp>
+#include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <optional>
 #include <string>
@@ -27,20 +27,20 @@ class CoffeeMakerDetection {
 
     std::optional<std::thread> mainThread;
     std::string lastError{};
-    std::unique_ptr<jutta_proto::JuttaConnection> connection;
-    std::string version{};
+    std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker;
+    std::string btName;
+    bool canceled{true};
 
  public:
-    explicit CoffeeMakerDetection(std::string&& device);
+    explicit CoffeeMakerDetection(std::string&& btName);
     ~CoffeeMakerDetection();
 
     void start();
     void stop();
 
     [[nodiscard]] CoffeeMakerDetectionState get_state() const;
-    std::unique_ptr<jutta_proto::JuttaConnection>&& get_connection();
+    std::shared_ptr<jutta_bt_proto::CoffeeMaker>&& get_coffee_maker();
     [[nodiscard]] const std::string& get_last_error() const;
-    [[nodiscard]] const std::string& get_version() const;
     type_signal_state_changed signal_state_changed();
 
  private:
@@ -49,6 +49,7 @@ class CoffeeMakerDetection {
 
     static bool starts_with(const std::string& s, const std::string& prefix);
     static bool ends_with(const std::string& s, const std::string& postfix);
+    void try_join();
 
     //-----------------------------Events:-----------------------------
     void on_notification_from_worker_thread();

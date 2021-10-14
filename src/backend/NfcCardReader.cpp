@@ -1,6 +1,4 @@
 #include "NfcCardReader.hpp"
-#include "jutta_proto/JuttaCommands.hpp"
-#include "jutta_proto/JuttaConnection.hpp"
 #include <cassert>
 #include <cctype>
 #include <chrono>

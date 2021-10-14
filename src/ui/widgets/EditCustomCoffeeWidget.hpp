@@ -1,6 +1,5 @@
 #pragma once
 
-#include "backend/CoffeeMakerWrapper.hpp"
 #include "backend/storage/UserProfileStorage.hpp"
 #include <memory>
 #include <gtkmm.h>
