@@ -32,7 +32,12 @@ class MainWindow : public Gtk::Window {
 
  public:
     MainWindow();
+    MainWindow(MainWindow&& old) = delete;
+    MainWindow(const MainWindow& other) = delete;
     ~MainWindow() override;
+
+    MainWindow& operator=(MainWindow&& old) = delete;
+    MainWindow& operator=(const MainWindow& other) = delete;
 
  private:
     void prep_window();

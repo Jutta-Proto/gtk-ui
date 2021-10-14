@@ -11,7 +11,9 @@ add_library(ui_widgets STATIC CoffeeSelectionWidget.hpp
                               NfcCardReaderWidget.cpp
                               NfcCardReaderWidget.hpp
                               StatusBarWidget.cpp
-                              StatusBarWidget.hpp)
+                              StatusBarWidget.hpp
+                              CoffeeMakerStatusWidget.cpp
+                              CoffeeMakerStatusWidget.hpp)
 
 target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM jutta_bt_proto
                                  PRIVATE backend storage)

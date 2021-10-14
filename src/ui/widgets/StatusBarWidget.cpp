@@ -1,6 +1,7 @@
 #include "StatusBarWidget.hpp"
 #include "sigc++-2.0/sigc++/functors/mem_fun.h"
 #include "ui/utils/UiUtils.hpp"
+#include <gtkmm/box.h>
 #include <gtkmm/enums.h>
 
 namespace ui::widgets {
@@ -81,7 +82,20 @@ void StatusBarWidget::prep_widget() {
     Glib::RefPtr<Gtk::StyleContext> reconnectBtnStyleCtx = reconnectBtn.get_style_context();
     reconnectBtnStyleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
     reconnectBtnStyleCtx->add_class("coffee-button");
-    this->pack_end(reconnectBtn);
+    pack_end(reconnectBtn, Gtk::PackOptions::PACK_SHRINK);
+
+    // Status:
+    statusWidget.set_margin_end(10);
+    statusWidget.set_margin_start(10);
+    statusWidget.set_margin_top(10);
+    statusWidget.set_margin_bottom(10);
+    reconnectBtn.set_valign(Gtk::Align::ALIGN_CENTER);
+    reconnectBtn.set_halign(Gtk::Align::ALIGN_END);
+    pack_end(statusWidget, Gtk::PackOptions::PACK_SHRINK);
+}
+
+void StatusBarWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
+    statusWidget.set_coffee_maker(std::move(coffeeMaker));
 }
 
 //-----------------------------Events:-----------------------------

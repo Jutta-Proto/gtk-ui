@@ -66,9 +66,13 @@ void CoffeeMakerDetection::run() {
                 continue;
             }
             SPDLOG_INFO("Coffee maker found.");
-            coffeeMaker = std::make_shared<jutta_bt_proto::CoffeeMaker>(std::string{result->name}, std::string{result->addr});
-            set_state(CoffeeMakerDetectionState::SUCCESS);
-            return;
+            std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker = std::make_shared<jutta_bt_proto::CoffeeMaker>(std::string{result->name}, std::string{result->addr});
+            if (coffeeMaker->connect()) {
+                this->coffeeMaker = std::move(coffeeMaker);
+                set_state(CoffeeMakerDetectionState::SUCCESS);
+                return;
+            }
+            coffeeMaker->disconnect();
         } catch (const std::exception& ex) {
             lastError = std::string(ex.what());
             SPDLOG_ERROR("Failed to discover BT devices with: {}", lastError);

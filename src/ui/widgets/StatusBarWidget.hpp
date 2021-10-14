@@ -1,6 +1,9 @@
 #pragma once
 
+#include "CoffeeMakerStatusWidget.hpp"
 #include "backend/storage/UserProfileStorage.hpp"
+#include <jutta_bt_proto/CoffeeMaker.hpp>
+#include <memory>
 #include <string>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
@@ -14,6 +17,7 @@ class StatusBarWidget : public Gtk::Box {
     Gtk::Button reconnectBtn{};
     Gtk::Label userLabel{};
     Gtk::Label userIdLabel{};
+    widgets::CoffeeMakerStatusWidget statusWidget{};
 
     backend::storage::UserProfile* profile{nullptr};
 
@@ -25,6 +29,7 @@ class StatusBarWidget : public Gtk::Box {
     StatusBarWidget();
 
     void set_user_profile(backend::storage::UserProfile* profile);
+    void set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker);
     type_signal_clicked signal_logout_clicked();
     type_signal_clicked signal_reconnect_clicked();
 
