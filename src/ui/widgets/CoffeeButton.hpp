@@ -10,7 +10,7 @@ class CoffeeButton : public Gtk::Button {
     /**
      * Signal for once the button has been clicked returning the sender.
      **/
-    using type_signal_clicked_sender = sigc::signal<void, const jutta_bt_proto::Product*>;
+    using type_signal_clicked_sender = sigc::signal<void, const jutta_bt_proto::Product&>;
 
  private:
     Glib::RefPtr<Gdk::Pixbuf> imageBuf{nullptr};
@@ -18,14 +18,14 @@ class CoffeeButton : public Gtk::Button {
     Gtk::Label* nameLabel{nullptr};
     Gtk::Image* image{nullptr};
 
-    const jutta_bt_proto::Product* product;
+    jutta_bt_proto::Product product;
 
     type_signal_clicked_sender m_signal_clicked_sender{};
     void on_button_clicked_wrapper();
 
  public:
-    CoffeeButton(const Glib::ustring& label, const jutta_bt_proto::Product* product, const std::string& imageResourcePath, const Glib::RefPtr<Gtk::CssProvider>& cssProvider);
-    CoffeeButton(CoffeeButton&& src) noexcept;
+    CoffeeButton(const jutta_bt_proto::Product& product, const std::string& imageResourcePath, const Glib::RefPtr<Gtk::CssProvider>& cssProvider);
+    CoffeeButton(CoffeeButton&& src) noexcept = delete;
     CoffeeButton& operator=(CoffeeButton&& src) noexcept;
 
     // noncopyable

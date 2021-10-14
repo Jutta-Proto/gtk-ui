@@ -4,12 +4,8 @@
 #include <gtkmm/label.h>
 
 namespace ui::widgets {
-CoffeeButton::CoffeeButton(const Glib::ustring& label, const jutta_bt_proto::Product* product, const std::string& imageResourcePath, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) : product(product) {
-    prep_button(label, imageResourcePath, cssProvider);
-}
-
-CoffeeButton::CoffeeButton(CoffeeButton&& src) noexcept : Gtk::Button(std::move(src)), product(src.product) {
-    signal_clicked().connect(sigc::mem_fun(this, &CoffeeButton::on_button_clicked_wrapper));
+CoffeeButton::CoffeeButton(const jutta_bt_proto::Product& product, const std::string& imageResourcePath, const Glib::RefPtr<Gtk::CssProvider>& cssProvider) : product(product) {
+    prep_button(product.name, imageResourcePath, cssProvider);
 }
 
 CoffeeButton& CoffeeButton::operator=(CoffeeButton&& src) noexcept {
