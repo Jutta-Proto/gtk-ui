@@ -43,3 +43,4 @@ compile_commands.json
 # Ignore serialized stuff
 UserProfiles.json
 Settings.json
+**/machinefiles/
