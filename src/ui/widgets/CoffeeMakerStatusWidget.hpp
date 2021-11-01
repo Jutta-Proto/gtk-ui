@@ -15,6 +15,7 @@ class CoffeeMakerStatusWidget : public Gtk::Button {
     Gtk::Popover statusPopover;
 
     std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker{nullptr};
+    Glib::Dispatcher alertsChangedDisp;
 
  public:
     CoffeeMakerStatusWidget();
@@ -33,7 +34,7 @@ class CoffeeMakerStatusWidget : public Gtk::Button {
     void prep_button();
 
     //-----------------------------Events:-----------------------------
-    void on_alerts_changed(const std::vector<const jutta_bt_proto::Alert*>& alerts);
+    void on_alerts_changed();
     void on_btn_clicked();
 };
 }  // namespace ui::widgets
