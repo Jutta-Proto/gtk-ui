@@ -89,9 +89,9 @@ else()
     set(CONAN_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 endif()
 
-conan_cmake_run(REQUIRES catch2/2.13.4
-                         nlohmann_json/3.9.1
-                         spdlog/1.8.5
+conan_cmake_run(REQUIRES catch2/2.13.7
+                         nlohmann_json/3.10.4
+                         spdlog/1.9.2
                          cryptopp/8.5.0
                 GENERATORS cmake_find_package
                 BUILD missing)
