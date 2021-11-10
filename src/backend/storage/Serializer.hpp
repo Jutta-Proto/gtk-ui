@@ -12,6 +12,7 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <spdlog/spdlog.h>
 
 // Required so we can parse std::optional
 #define JSON_HAS_CPP_17
@@ -49,7 +50,7 @@ class Serializer {
             SPDLOG_ERROR("Error parsing {}: {}", this->filename.string(), e.what());
             return false;
         }
-        spdlog::info("Read json file {}", this->filename.string());
+        SPDLOG_INFO("Read json file {}", this->filename.string());
         return true;
     }
 
