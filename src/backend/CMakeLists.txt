@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 add_subdirectory(storage)
 
-add_library(backend STATIC CoffeeMakerDetection.hpp
-                           CoffeeMakerDetection.cpp
+add_library(backend STATIC CoffeeMakerConnectionHandler.hpp
+                           CoffeeMakerConnectionHandler.cpp
                            NfcCardReader.cpp
                            NfcCardReader.hpp
                            FixedSizeStack.cpp

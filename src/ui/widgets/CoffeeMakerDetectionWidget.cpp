@@ -1,4 +1,5 @@
 #include "CoffeeMakerDetectionWidget.hpp"
+#include "backend/CoffeeMakerConnectionHandler.hpp"
 #include "ui/utils/UiUtils.hpp"
 #include <cassert>
 #include <cstddef>
@@ -20,6 +21,7 @@
 namespace ui::widgets {
 CoffeeMakerDetectionWidget::CoffeeMakerDetectionWidget() {
     prep_widget();
+    backend::CoffeeMakerConnectionHandler::get_instance().signal_state_changed().connect(sigc::mem_fun(this, &CoffeeMakerDetectionWidget::on_detection_state_changed));
 }
 
 void CoffeeMakerDetectionWidget::prep_widget() {
@@ -73,21 +75,14 @@ void CoffeeMakerDetectionWidget::start_detecting() {
     prep_error_bar();
     errorBar->hide();
 
-    if (detection) {
-        stop_detecting();
-        detection->signal_state_changed().clear();
-        detection = nullptr;
+    backend::CoffeeMakerConnectionHandler::get_instance().set_name(std::string(btName->get_buffer()->get_text()));
+    if (backend::CoffeeMakerConnectionHandler::get_instance().get_state() == backend::CoffeeMakerConnectionHandler::CoffeeMakerConnectionHandlerState::NOT_RUNNING) {
+        backend::CoffeeMakerConnectionHandler::get_instance().connect();
     }
-
-    assert(!detection);
-    detection = std::make_unique<backend::CoffeeMakerDetection>(std::string(btName->get_buffer()->get_text()));
-    detection->signal_state_changed().connect(sigc::mem_fun(*this, &CoffeeMakerDetectionWidget::on_detection_state_changed));
-    detection->start();
 }
 
 void CoffeeMakerDetectionWidget::stop_detecting() {
-    assert(detection);
-    detection->stop();
+    backend::CoffeeMakerConnectionHandler::get_instance().disconnect();
 }
 
 void CoffeeMakerDetectionWidget::prep_error_bar() {
@@ -112,47 +107,29 @@ CoffeeMakerDetectionWidget::type_signal_detection_successfull CoffeeMakerDetecti
 }
 
 //-----------------------------Events:-----------------------------
-void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::CoffeeMakerDetection::CoffeeMakerDetectionState& state) {
+void CoffeeMakerDetectionWidget::on_detection_state_changed(const backend::CoffeeMakerConnectionHandler::CoffeeMakerConnectionHandlerState& state) {
     switch (state) {
-        case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::SUCCESS:
+        case backend::CoffeeMakerConnectionHandler::CoffeeMakerConnectionHandlerState::CONNECTED:
             detecting = false;
             actionBtn->set_label("Success!");
             actionSpinner->stop();
             // Emit the signal handler:
-            m_signal_detection_successfull.emit(detection->get_coffee_maker());
+            m_signal_detection_successfull.emit(backend::CoffeeMakerConnectionHandler::get_instance().get_coffee_maker());
             break;
 
-        case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::ERROR:
+        case backend::CoffeeMakerConnectionHandler::CoffeeMakerConnectionHandlerState::NOT_RUNNING:
             detecting = false;
             btName->set_sensitive(true);
             actionBtn->set_label("Connect");
             actionBtn->set_sensitive(true);
             actionSpinner->stop();
-
-            errorLabel->set_label(detection->get_last_error());
-            errorBar->show_all();
             break;
 
-        case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::CANCELD:
-            detecting = false;
-            btName->set_sensitive(false);
-            actionBtn->set_label("Canceling...");
-            actionBtn->set_sensitive(false);
-            actionSpinner->start();
-            break;
-
-        case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::RUNNING:
+        case backend::CoffeeMakerConnectionHandler::CoffeeMakerConnectionHandlerState::SEARCHING:
+        case backend::CoffeeMakerConnectionHandler::CoffeeMakerConnectionHandlerState::CONNECTING:
             detecting = true;
             actionBtn->set_label("Cancel");
             actionBtn->set_sensitive(true);
-            break;
-
-        case backend::CoffeeMakerDetection::CoffeeMakerDetectionState::NOT_RUNNING:
-            detecting = false;
-            btName->set_sensitive(true);
-            actionBtn->set_label("Connect");
-            actionBtn->set_sensitive(true);
-            actionSpinner->stop();
             break;
 
         default:

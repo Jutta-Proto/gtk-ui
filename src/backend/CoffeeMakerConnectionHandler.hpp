@@ -8,20 +8,18 @@
 #include <gtkmm.h>
 
 namespace backend {
-class CoffeeMakerDetection {
+class CoffeeMakerConnectionHandler {
  public:
-    enum class CoffeeMakerDetectionState {
+    enum class CoffeeMakerConnectionHandlerState {
         NOT_RUNNING,
-        STARTING,
-        RUNNING,
-        SUCCESS,
-        ERROR,
-        CANCELD
+        SEARCHING,
+        CONNECTING,
+        CONNECTED
     };
 
  private:
-    CoffeeMakerDetectionState state{CoffeeMakerDetectionState::NOT_RUNNING};
-    using type_signal_state_changed = sigc::signal<void, CoffeeMakerDetectionState>;
+    CoffeeMakerConnectionHandlerState state{CoffeeMakerConnectionHandlerState::NOT_RUNNING};
+    using type_signal_state_changed = sigc::signal<void, CoffeeMakerConnectionHandlerState>;
     type_signal_state_changed m_signal_state_changed;
     Glib::Dispatcher disp;
 
@@ -31,21 +29,26 @@ class CoffeeMakerDetection {
     std::string btName;
     bool canceled{true};
 
+    CoffeeMakerConnectionHandler();
+    ~CoffeeMakerConnectionHandler();
+
  public:
-    explicit CoffeeMakerDetection(std::string&& btName);
-    ~CoffeeMakerDetection();
+    void set_name(std::string&& btName);
+    void connect();
+    void disconnect();
 
-    void start();
-    void stop();
-
-    [[nodiscard]] CoffeeMakerDetectionState get_state() const;
+    [[nodiscard]] CoffeeMakerConnectionHandlerState get_state() const;
     std::shared_ptr<jutta_bt_proto::CoffeeMaker>&& get_coffee_maker();
     [[nodiscard]] const std::string& get_last_error() const;
     type_signal_state_changed signal_state_changed();
 
+    static CoffeeMakerConnectionHandler& get_instance();
+
  private:
+    void start();
+    void stop();
     void run();
-    void set_state(CoffeeMakerDetectionState newState);
+    void set_state(CoffeeMakerConnectionHandlerState newState);
 
     static bool starts_with(const std::string& s, const std::string& prefix);
     static bool ends_with(const std::string& s, const std::string& postfix);
@@ -53,5 +56,6 @@ class CoffeeMakerDetection {
 
     //-----------------------------Events:-----------------------------
     void on_notification_from_worker_thread();
+    void on_coffee_maker_state_changed(const jutta_bt_proto::CoffeeMakerState& state);
 };
 }  // namespace backend
