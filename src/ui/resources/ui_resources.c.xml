@@ -7,6 +7,7 @@
     <file>nfc.png</file>
     <file>gear.png</file>
     <file>coffee_gear.png</file>
+    <file>coffee_maker.png</file>
     <file>theme.css</file>
   </gresource>
 </gresources>

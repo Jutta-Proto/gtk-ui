@@ -75,6 +75,7 @@ void MainWindow::prep_window() {
 
     show_all();
 
+    // hide_overlay();
     show_detect_coffee_maker();
     // show_nfc_card_detection();
 }

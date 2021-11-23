@@ -70,27 +70,20 @@ void StatusBarWidget::prep_widget() {
     userIdLabel.set_margin_end(10);
     add(userIdLabel);
 
-    // Reconnect:
-    reconnectBtn.set_label("Reconnect");
-    reconnectBtn.set_margin_end(10);
-    reconnectBtn.set_margin_start(10);
-    reconnectBtn.set_margin_top(10);
-    reconnectBtn.set_margin_bottom(10);
-    reconnectBtn.set_valign(Gtk::Align::ALIGN_CENTER);
-    reconnectBtn.set_halign(Gtk::Align::ALIGN_END);
-    reconnectBtn.signal_clicked().connect(sigc::mem_fun(this, &StatusBarWidget::on_reconnect_clicked));
-    Glib::RefPtr<Gtk::StyleContext> reconnectBtnStyleCtx = reconnectBtn.get_style_context();
-    reconnectBtnStyleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
-    reconnectBtnStyleCtx->add_class("coffee-button");
-    pack_end(reconnectBtn, Gtk::PackOptions::PACK_SHRINK);
+    // Coffee Maker Status:
+    coffeeMakerButton.set_margin_end(10);
+    coffeeMakerButton.set_margin_start(10);
+    coffeeMakerButton.set_margin_top(10);
+    coffeeMakerButton.set_margin_bottom(10);
+    coffeeMakerButton.set_valign(Gtk::Align::ALIGN_CENTER);
+    coffeeMakerButton.set_halign(Gtk::Align::ALIGN_END);
+    pack_end(coffeeMakerButton, Gtk::PackOptions::PACK_SHRINK);
 
     // Status:
     statusWidget.set_margin_end(10);
     statusWidget.set_margin_start(10);
     statusWidget.set_margin_top(10);
     statusWidget.set_margin_bottom(10);
-    reconnectBtn.set_valign(Gtk::Align::ALIGN_CENTER);
-    reconnectBtn.set_halign(Gtk::Align::ALIGN_END);
     pack_end(statusWidget, Gtk::PackOptions::PACK_SHRINK);
 }
 

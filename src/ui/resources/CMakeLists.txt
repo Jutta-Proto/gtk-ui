@@ -10,4 +10,5 @@ set(RESOURCE_DEPS
                   ${CMAKE_CURRENT_SOURCE_DIR}/nfc.png # https://www.iconfinder.com/icons/6405387/nfc_smartphone_call_phone_icon
                   ${CMAKE_CURRENT_SOURCE_DIR}/gear.png # https://www.iconfinder.com/icons/211751/gear_icon
                   ${CMAKE_CURRENT_SOURCE_DIR}/coffee_gear.png # https://www.iconfinder.com/icons/211751/gear_icon
+                  ${CMAKE_CURRENT_SOURCE_DIR}/coffee_maker.png
      PARENT_SCOPE)
