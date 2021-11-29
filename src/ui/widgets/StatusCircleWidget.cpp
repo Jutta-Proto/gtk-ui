@@ -3,7 +3,7 @@
 namespace ui::widgets {
 StatusCircleWidget::StatusCircleWidget() {
     prep_widget();
-    // this->signal_draw().connect(sigc::mem_fun(this, &StatusCircleWidget::on_draw_handler));
+    this->signal_draw().connect(sigc::mem_fun(this, &StatusCircleWidget::on_draw_handler));
 }
 
 void StatusCircleWidget::prep_widget() {}
@@ -22,7 +22,7 @@ bool StatusCircleWidget::on_draw_handler(const Cairo::RefPtr<::Cairo::Context>& 
     ctx->restore();  // back to opaque black
     ctx->set_line_width(1);
     ctx->stroke();
-    ctx->save();
+    ctx->restore();
     return false;
 }
 }  // namespace ui::widgets
