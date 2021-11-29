@@ -22,6 +22,7 @@ bool StatusCircleWidget::on_draw_handler(const Cairo::RefPtr<::Cairo::Context>& 
     ctx->restore();  // back to opaque black
     ctx->set_line_width(1);
     ctx->stroke();
+    ctx->save();
     ctx->restore();
     return false;
 }
