@@ -3,7 +3,7 @@
 namespace ui::widgets {
 StatusCircleWidget::StatusCircleWidget() {
     prep_widget();
-    this->signal_draw().connect(sigc::mem_fun(this, &StatusCircleWidget::on_draw_handler));
+    // this->signal_draw().connect(sigc::mem_fun(this, &StatusCircleWidget::on_draw_handler));
 }
 
 void StatusCircleWidget::prep_widget() {}
