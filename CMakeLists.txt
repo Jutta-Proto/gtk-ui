@@ -99,7 +99,7 @@ conan_cmake_run(REQUIRES catch2/2.13.4
 conan_cmake_autodetect(settings)
 conan_cmake_install(PATH_OR_REFERENCE .
                     BUILD missing
-                    REMOTE conan-center
+                    REMOTE conancenter
                     SETTINGS ${settings})
 
 find_package(Catch2 REQUIRED)
