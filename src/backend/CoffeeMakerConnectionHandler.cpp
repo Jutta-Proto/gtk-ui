@@ -66,7 +66,7 @@ void CoffeeMakerConnectionHandler::run() {
         }
 
         if (state == CoffeeMakerConnectionHandlerState::CONNECTED) {
-            std::this_thread::yield();
+            std::this_thread::sleep_for(std::chrono::milliseconds{500});
             continue;
         }
 
@@ -76,7 +76,7 @@ void CoffeeMakerConnectionHandler::run() {
                 coffeeMaker = nullptr;
                 SPDLOG_DEBUG("Coffee maker connection: Cleanup...");
             }
-            std::this_thread::yield();
+            std::this_thread::sleep_for(std::chrono::milliseconds{500});
             continue;
         }
 
