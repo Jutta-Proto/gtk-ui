@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstddef>
 #include <string>
+#include <gdkmm/device.h>
 #include <gtkmm/button.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/popover.h>
@@ -30,7 +31,9 @@ void CoffeeMakerButton::prep_button() {
     image->set_halign(Gtk::Align::ALIGN_CENTER);
     statusOverlay.add(*image);
     statusOverlay.add_overlay(statusCircle);
+    statusOverlay.set_overlay_pass_through(statusCircle, true);
     statusOverlay.show_all();
+    statusOverlay.set_events(Gdk::EventMask());
 
     // Popover:
     statusPopover.add(popoverMainBox);

@@ -6,7 +6,12 @@ StatusCircleWidget::StatusCircleWidget() {
     this->signal_draw().connect(sigc::mem_fun(this, &StatusCircleWidget::on_draw_handler));
 }
 
-void StatusCircleWidget::prep_widget() {}
+void StatusCircleWidget::prep_widget() {
+    // Don't catch input. The widget has to be realized for this:
+    signal_realize().connect([&] {
+        get_window()->set_pass_through(true);
+    });
+}
 
 void StatusCircleWidget::set_color(Gdk::RGBA&& color) {
     this->color = std::move(color);
