@@ -53,7 +53,7 @@ void StatusBarWidget::prep_widget() {
     logoutBtn.set_valign(Gtk::Align::ALIGN_CENTER);
     logoutBtn.signal_clicked().connect(sigc::mem_fun(this, &StatusBarWidget::on_logout_clicked));
     Glib::RefPtr<Gtk::StyleContext> logoutBtnStyleCtx = logoutBtn.get_style_context();
-    logoutBtnStyleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+    logoutBtnStyleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     logoutBtnStyleCtx->add_class("coffee-button");
     add(logoutBtn);
 

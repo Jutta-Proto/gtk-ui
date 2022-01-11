@@ -20,7 +20,7 @@ void CoffeeButton::prep_button(const Glib::ustring& label, const std::string& im
 
     // Style:
     Glib::RefPtr<Gtk::StyleContext> styleCtx = get_style_context();
-    styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+    styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     styleCtx->add_class("coffee-button");
 
     // Content:

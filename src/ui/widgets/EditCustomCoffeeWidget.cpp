@@ -21,7 +21,7 @@ void EditCustomCoffeeWidget::prep_widget() {
     // Style:
     Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
     Glib::RefPtr<Gtk::StyleContext> styleCtx = get_style_context();
-    styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_USER);
+    styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     styleCtx->add_class("overlay-frame-background");
 
     set_halign(Gtk::Align::ALIGN_CENTER);
