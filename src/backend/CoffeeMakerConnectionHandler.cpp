@@ -101,8 +101,8 @@ void CoffeeMakerConnectionHandler::run() {
 
                 SPDLOG_DEBUG("Coffee maker connection: Connecting...");
                 coffeeMaker = std::make_shared<jutta_bt_proto::CoffeeMaker>(std::string{scanResult->name}, std::string{scanResult->addr});
+                coffeeMaker->set_state_changed_event_handler([this](const jutta_bt_proto::CoffeeMakerState& state) { this->on_coffee_maker_state_changed(state); });
                 if (coffeeMaker->connect()) {
-                    coffeeMaker->set_state_changed_event_handler([this](const jutta_bt_proto::CoffeeMakerState& state) { this->on_coffee_maker_state_changed(state); });
                     set_state(CoffeeMakerConnectionHandlerState::CONNECTED);
                 } else {
                     coffeeMaker = nullptr;
