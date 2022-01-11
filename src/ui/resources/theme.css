@@ -1,15 +1,15 @@
 .coffee-button {
     border-radius: 0;
     border-width: 0px;
-    background-color: alpha(@content_view_bg, 0.70);
+    background-image: image(alpha(@content_view_bg, 0.70));
     box-shadow: 4px 4px 7px 0px rgba(50, 50, 50, 0.40);
     background-size: contain;
     background-repeat: no-repeat;
-    background-origin: content-box;
+    background-origin: border-box;
 }
 
 .coffee-button:hover {
-    background-color: alpha(@content_view_bg, 0.90);
+    background-image: image(alpha(@content_view_bg, 0.90));
 }
 
 .coffee-button:active {
@@ -24,12 +24,12 @@
 .brew-button {
     border-radius: 0;
     border-width: 0px;
-    background-color: alpha(@content_view_bg, 0.70);
+    background-image: image(alpha(@content_view_bg, 0.70));
     box-shadow: 4px 4px 7px 0px rgba(50, 50, 50, 0.40);
 }
 
 .brew-button:hover {
-    background-color: alpha(@content_view_bg, 0.90);
+    background-image: image(alpha(@content_view_bg, 0.90));
 }
 
 .brew-button:active {
