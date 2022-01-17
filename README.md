@@ -22,14 +22,14 @@ The following requirements are required to build this project.
 ### Fedora
 To install those dependencies on Fedora, run the following commands:
 ```bash
-sudo dnf install -y gcc clang cmake python3 python3-pip gtk3-devel gtkmm30-devel
+sudo dnf install -y gcc clang cmake python3 python3-pip gtk3-devel gtkmm30-devel bluez-libs-devel
 pip3 install --user conan
 ```
 
 ### Raspberry Pi
 To install those dependencies on a Raspberry Pi, running the [Raspberry Pi OS](https://www.raspberrypi.org/software/), run the following commands:
 ```bash
-sudo apt install -y cmake python3 python3-pip libgtk-3-dev libgtkmm-3.0-dev
+sudo apt install -y cmake python3 python3-pip libgtk-3-dev libgtkmm-3.0-dev libbluetooth-dev
 pip3 install --user conan
 ```
 For all the other requirements, head over here: https://github.com/Jutta-Proto/hardware-pi#raspberry-pi-os
