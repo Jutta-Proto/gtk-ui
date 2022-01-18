@@ -1,7 +1,6 @@
 #pragma once
 
 #include <jutta_bt_proto/CoffeeMaker.hpp>
-#include <jutta_bt_proto/CoffeeMakerLoader.hpp>
 #include <memory>
 #include <vector>
 #include <gtkmm.h>

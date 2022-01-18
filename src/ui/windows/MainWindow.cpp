@@ -25,6 +25,7 @@ MainWindow::MainWindow() {
     prep_window();
     nfcCardReader.signal_card_detected().connect(sigc::mem_fun(this, &MainWindow::on_nfc_card_detected));
     nfcCardReader.start();
+    alertsChangedDisp.connect(sigc::mem_fun(*this, &MainWindow::on_alerts_changed));
 }
 
 MainWindow::~MainWindow() {
@@ -75,7 +76,8 @@ void MainWindow::prep_window() {
 
     show_all();
 
-    // hide_overlay();
+    hide_status_overlay();
+    // hide_main_overlay();
     show_detect_coffee_maker();
     // show_nfc_card_detection();
 }
@@ -90,17 +92,26 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     mainBox->set_vexpand(true);
     mainBox->set_homogeneous(false);
 
-    // Predefined coffee:
+    // Coffee:
     Gtk::ScrolledWindow* coffeeSelectionWindow = Gtk::make_managed<Gtk::ScrolledWindow>();
     coffeeSelectionWidget.signal_edit_custom_coffee_clicked().connect(sigc::mem_fun(this, &MainWindow::on_edit_custom_coffee_clicked));
     coffeeSelectionWindow->add(coffeeSelectionWidget);
     coffeeSelectionWindow->set_policy(Gtk::PolicyType::POLICY_NEVER, Gtk::PolicyType::POLICY_AUTOMATIC);
     coffeeSelectionWindow->set_vexpand(true);
-    mainBox->add(*coffeeSelectionWindow);
+    statusOverlay.add(*coffeeSelectionWindow);
+    mainBox->add(statusOverlay);
     Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
     Glib::RefPtr<Gtk::StyleContext> styleCtx = mainBox->get_style_context();
     styleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     styleCtx->add_class("coffee-beans-background");
+
+    // Status Overlay
+    statusOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
+    statusOverlay.add_overlay(*statusOverlayBox);
+    statusOverlayBox->hide();
+    Glib::RefPtr<Gtk::StyleContext> overlayStyleCtx = statusOverlayBox->get_style_context();
+    overlayStyleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+    overlayStyleCtx->add_class("overlay-background");
 
     // Status bar:
     statusBarWidget.signal_logout_clicked().connect(sigc::mem_fun(this, &MainWindow::on_logout_clicked));
@@ -111,7 +122,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     mainOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
     mainOverlay.add_overlay(*mainOverlayBox);
     mainOverlayBox->hide();
-    Glib::RefPtr<Gtk::StyleContext> overlayStyleCtx = mainOverlayBox->get_style_context();
+    overlayStyleCtx = mainOverlayBox->get_style_context();
     overlayStyleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     overlayStyleCtx->add_class("overlay-background");
 }
@@ -133,7 +144,7 @@ void MainWindow::show_detect_coffee_maker() {
         coffeeMakerDetectionWidget = Gtk::make_managed<widgets::CoffeeMakerDetectionWidget>();
         coffeeMakerDetectionWidget->signal_detection_successfull().connect(sigc::mem_fun(this, &MainWindow::on_coffee_maker_detection_successfull));
     }
-    clear_overlay_children();
+    clear_main_overlay_children();
     mainOverlayBox->add(*coffeeMakerDetectionWidget);
     mainOverlayBox->show_all();
 }
@@ -143,12 +154,12 @@ void MainWindow::show_nfc_card_detection() {
         nfcCardDetectionWidget = Gtk::make_managed<widgets::NfcCardReaderWidget>();
         nfcCardDetectionWidget->signal_detection_canceled().connect(sigc::mem_fun(this, &MainWindow::on_nfc_card_detection_canceled));
     }
-    clear_overlay_children();
+    clear_main_overlay_children();
     mainOverlayBox->add(*nfcCardDetectionWidget);
     mainOverlayBox->show_all();
 }
 
-void MainWindow::clear_overlay_children() {
+void MainWindow::clear_main_overlay_children() {
     for (Gtk::Widget* widget : mainOverlayBox->get_children()) {
         mainOverlayBox->remove(*widget);
     }
@@ -172,8 +183,16 @@ void MainWindow::load_user_profile(backend::storage::UserProfile* profile) {
     statusBarWidget.set_user_profile(profile);
 }
 
-void MainWindow::hide_overlay() {
+void MainWindow::hide_main_overlay() {
     mainOverlayBox->hide();
+}
+
+void MainWindow::show_status_overlay() {
+    statusOverlayBox->hide();
+}
+
+void MainWindow::hide_status_overlay() {
+    statusOverlayBox->hide();
 }
 
 //-----------------------------Events:-----------------------------
@@ -186,12 +205,15 @@ void MainWindow::on_coffee_maker_detection_successfull(std::shared_ptr<jutta_bt_
     this->coffeeMaker = std::move(coffeeMaker);
     statusBarWidget.set_coffee_maker(this->coffeeMaker);
     coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
+    statusOverlayWidget.set_coffee_maker(this->coffeeMaker);
     show_nfc_card_detection();
+    this->coffeeMaker->set_alerts_changed_event_handler([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
+    on_alerts_changed();
 }
 
 void MainWindow::on_nfc_card_detection_canceled() {
     load_user_profile("");
-    hide_overlay();
+    hide_main_overlay();
 }
 
 void MainWindow::on_full_screen_clicked() {
@@ -239,7 +261,7 @@ void MainWindow::on_reconnect_clicked() {
 
 void MainWindow::on_nfc_card_detected(const std::string& cardId) {
     load_user_profile(cardId);
-    hide_overlay();
+    hide_main_overlay();
     // Once a card has been detected, enter is being pressed. Skip this false activation:
     skipNextLogoutClicked = true;
 }
@@ -252,6 +274,15 @@ void MainWindow::on_custom_coffee_back_clicked() {
     stack->set_visible_child(mainOverlay);
 }
 
-void MainWindow::on_custom_coffee_profile_value_changed(backend::storage::UserProfile* /*profile*/) {
+void MainWindow::on_custom_coffee_profile_value_changed(backend::storage::UserProfile* /*profile*/) {}
+
+void MainWindow::on_alerts_changed() {
+    for (const jutta_bt_proto::Alert* alert : coffeeMaker->get_alerts()) {
+        assert(alert);
+        if (alert->type == "block") {
+            show_status_overlay();
+        }
+    }
+    hide_status_overlay();
 }
 }  // namespace ui::windows

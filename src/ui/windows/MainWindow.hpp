@@ -7,6 +7,7 @@
 #include "ui/widgets/EditCustomCoffeeWidget.hpp"
 #include "ui/widgets/NfcCardReaderWidget.hpp"
 #include "ui/widgets/StatusBarWidget.hpp"
+#include "ui/widgets/StatusOverlayWidget.hpp"
 #include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <memory>
 #include <gtkmm.h>
@@ -24,9 +25,13 @@ class MainWindow : public Gtk::Window {
     widgets::NfcCardReaderWidget* nfcCardDetectionWidget{nullptr};
     widgets::EditCustomCoffeeWidget editCustomCoffeeWidget{};
     widgets::CoffeeSelectionWidget coffeeSelectionWidget{};
+    Gtk::Overlay statusOverlay{};
+    widgets::StatusOverlayWidget statusOverlayWidget{};
+    Gtk::Box* statusOverlayBox{nullptr};
     widgets::StatusBarWidget statusBarWidget{};
 
     std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker{nullptr};
+    Glib::Dispatcher alertsChangedDisp;
     backend::NfcCardReader nfcCardReader{};
     bool skipNextLogoutClicked{false};
 
@@ -46,8 +51,10 @@ class MainWindow : public Gtk::Window {
     static void prep_advanced_stack_page(Gtk::Stack* stack);
     void show_detect_coffee_maker();
     void show_nfc_card_detection();
-    void hide_overlay();
-    void clear_overlay_children();
+    void show_status_overlay();
+    void hide_status_overlay();
+    void hide_main_overlay();
+    void clear_main_overlay_children();
     void load_user_profile(const std::string& cardId);
     void load_user_profile(backend::storage::UserProfile* profile);
 
@@ -66,5 +73,6 @@ class MainWindow : public Gtk::Window {
     bool on_window_state_changed(GdkEventWindowState* state);
     void on_custom_coffee_back_clicked();
     void on_custom_coffee_profile_value_changed(backend::storage::UserProfile* profile);
+    void on_alerts_changed();
 };
 }  // namespace ui::windows
