@@ -13,5 +13,5 @@ set(RESOURCE_DEF ${RESOURCE_DEF} PARENT_SCOPE)
 set(RESOURCE_DIR ${RESOURCE_DIR} PARENT_SCOPE)
 set(RESOURCE_DEPS ${RESOURCE_DEPS} PARENT_SCOPE)
 
-target_link_libraries(ui PUBLIC PkgConfig::GTKMM nlohmann_json::nlohmann_json
-                         PRIVATE logger ui_windows)
+target_link_libraries(ui PUBLIC PkgConfig::GTKMM nlohmann_json::nlohmann_json ui_windows
+                         PRIVATE logger)

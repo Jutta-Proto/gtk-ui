@@ -50,7 +50,7 @@ void StatusOverlayWidget::prep_widget() {
 void StatusOverlayWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
     this->coffeeMaker = std::move(coffeeMaker);
     if (this->coffeeMaker) {
-        this->coffeeMaker->set_alerts_changed_event_handler([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
+        this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
         on_alerts_changed();
     }
 }

@@ -188,7 +188,7 @@ void MainWindow::hide_main_overlay() {
 }
 
 void MainWindow::show_status_overlay() {
-    statusOverlayBox->hide();
+    statusOverlayBox->show();
 }
 
 void MainWindow::hide_status_overlay() {
@@ -207,7 +207,7 @@ void MainWindow::on_coffee_maker_detection_successfull(std::shared_ptr<jutta_bt_
     coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
     statusOverlayWidget.set_coffee_maker(this->coffeeMaker);
     show_nfc_card_detection();
-    this->coffeeMaker->set_alerts_changed_event_handler([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
+    this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
     on_alerts_changed();
 }
 
@@ -281,6 +281,7 @@ void MainWindow::on_alerts_changed() {
         assert(alert);
         if (alert->type == "block") {
             show_status_overlay();
+            return;
         }
     }
     hide_status_overlay();

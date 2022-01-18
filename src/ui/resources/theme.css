@@ -45,5 +45,5 @@
 }
 
 .status-bar-background {
-    background-color: alpha(@content_view_bg, 0.70);
+    background-color: alpha(@content_view_bg, 0.80);
 }
