@@ -108,6 +108,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
     // Status Overlay
     statusOverlayBox = Gtk::make_managed<Gtk::Box>(Gtk::Orientation::ORIENTATION_VERTICAL);
     statusOverlay.add_overlay(*statusOverlayBox);
+    statusOverlayBox->add(statusOverlayWidget);
     statusOverlayBox->hide();
     Glib::RefPtr<Gtk::StyleContext> overlayStyleCtx = statusOverlayBox->get_style_context();
     overlayStyleCtx->add_provider(cssProvider, GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);

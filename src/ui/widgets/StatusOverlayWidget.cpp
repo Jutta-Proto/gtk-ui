@@ -27,9 +27,9 @@ void StatusOverlayWidget::prep_widget() {
     mainBox->set_halign(Gtk::Align::ALIGN_CENTER);
     add(*mainBox);
 
-    alertImageBuf = Gdk::Pixbuf::create_from_resource("/ui/nfc.png", 128, 128, true);
-    Gtk::Image* nfcImage = Gtk::make_managed<Gtk::Image>(alertImageBuf);
-    mainBox->add(*nfcImage);
+    Gtk::Image* warningImage = Gtk::make_managed<Gtk::Image>();
+    warningImage->set_from_icon_name("dialog-error", Gtk::ICON_SIZE_DIALOG);
+    mainBox->add(*warningImage);
 
     // Seperator:
     Gtk::Separator* seperator = Gtk::make_managed<Gtk::Separator>(Gtk::Orientation::ORIENTATION_VERTICAL);
