@@ -1,10 +1,12 @@
-# UI
-A `C++20` and [GTK 3](https://www.gtk.org/) based implementation for the jutta coffee maker UI to control JURA coffee makers.
-The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-cpp).
+# UI Bluetooth
+A `C++20` and [GTK 3](https://www.gtk.org/) based implementation for the jutta coffee maker UI to control JURA coffee makers over Bluetooth.
+The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-bt-cpp).
+
+**For an UI that supports the serial (UART) protocol click [here](https://github.com/Jutta-Proto/gtk-ui/tree/main).**
 
 ## Example
 ### UI example
-![UI example image](https://user-images.githubusercontent.com/11741404/115422997-b925eb80-a1fd-11eb-8208-96093122b28e.png)
+![UI example image](https://user-images.githubusercontent.com/11741404/150349114-3e614d1f-fa02-4410-97d2-fe97836752c1.png)
 
 
 ### Working Prototype with an JURA E6
@@ -41,6 +43,8 @@ Run the following commands to build this project:
 git clone https://github.com/Jutta-Proto/gtk-ui.git
 # Switch into the newly cloned repository:
 cd gtk-ui
+# Check out the correct branch:
+git checkout bt
 # Build the project:
 mkdir build
 cd build
@@ -51,7 +55,7 @@ cmake --build .
 ## License and Copyright Notice 
 This piece of software uses the following other libraries and dependencies:
 
-### Catch2 (2.13.4)
+### Catch2 (2.13.7)
 Catch2 is mainly a unit testing framework for C++, but it also provides basic micro-benchmarking features, and simple BDD macros.
 
 <details>
@@ -85,7 +89,7 @@ DEALINGS IN THE SOFTWARE.
 
 </details>
 
-### Nlohmann JSON (3.9.1)
+### Nlohmann JSON (3.10.4)
 JSON for Modern C++.
 
 <details>
@@ -117,7 +121,7 @@ SOFTWARE.
 
 </details>
 
-### spdlog (1.8.5)
+### spdlog (1.9.2)
 Very fast, header-only/compiled, C++ logging library.
 
 <details>
