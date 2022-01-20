@@ -2,6 +2,7 @@
 
 #include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <memory>
+#include <optional>
 #include <vector>
 #include <gtkmm.h>
 #include <gtkmm/button.h>
@@ -15,6 +16,7 @@ class CoffeeMakerStatusWidget : public Gtk::Button {
 
     std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker{nullptr};
     Glib::Dispatcher alertsChangedDisp;
+    std::optional<eventpp::CallbackList<void(const std::vector<const jutta_bt_proto::Alert*>&)>::Handle> alertsHandle;
 
  public:
     CoffeeMakerStatusWidget();

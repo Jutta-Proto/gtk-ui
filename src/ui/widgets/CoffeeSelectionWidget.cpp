@@ -54,11 +54,16 @@ void CoffeeSelectionWidget::set_user_profile(backend::storage::UserProfile* prof
 }*/
 
 void CoffeeSelectionWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
+    if (joeHandle) {
+        this->coffeeMaker->joeChangedEventHandler.remove(*joeHandle);
+        joeHandle = std::nullopt;
+    }
+
     this->coffeeMaker = std::move(coffeeMaker);
     if (this->coffeeMaker) {
-        this->coffeeMaker->joeChangedEventHandler.append([this](const std::shared_ptr<jutta_bt_proto::Joe>& joe) { on_joe_changed(joe); });
-        on_joe_changed(this->coffeeMaker->get_joe());
+        joeHandle = this->coffeeMaker->joeChangedEventHandler.append([this](const std::shared_ptr<jutta_bt_proto::Joe>& joe) { on_joe_changed(joe); });
     }
+    on_joe_changed(this->coffeeMaker ? this->coffeeMaker->get_joe() : nullptr);
 }
 
 CoffeeSelectionWidget::type_signal_edit_custom_coffee_clicked CoffeeSelectionWidget::signal_edit_custom_coffee_clicked() {

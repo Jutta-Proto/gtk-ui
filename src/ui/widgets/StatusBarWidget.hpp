@@ -15,7 +15,6 @@ namespace ui::widgets {
 class StatusBarWidget : public Gtk::Box {
  private:
     Gtk::Button logoutBtn{};
-    Gtk::Button reconnectBtn{};
     Gtk::Label userLabel{};
     Gtk::Label userIdLabel{};
     CoffeeMakerStatusWidget statusWidget{};
@@ -25,7 +24,7 @@ class StatusBarWidget : public Gtk::Box {
 
     using type_signal_clicked = sigc::signal<void>;
     type_signal_clicked m_signal_logout_clicked;
-    type_signal_clicked m_signal_reconnect_clicked;
+    type_signal_clicked m_signal_disconnect_clicked;
 
  public:
     StatusBarWidget();
@@ -33,13 +32,13 @@ class StatusBarWidget : public Gtk::Box {
     void set_user_profile(backend::storage::UserProfile* profile);
     void set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker);
     type_signal_clicked signal_logout_clicked();
-    type_signal_clicked signal_reconnect_clicked();
+    type_signal_clicked signal_disconnect_clicked();
 
  private:
     void prep_widget();
 
     //-----------------------------Events:-----------------------------
     void on_logout_clicked();
-    void on_reconnect_clicked();
+    void on_disconnect_clicked();
 };
 }  // namespace ui::widgets

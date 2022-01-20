@@ -10,6 +10,7 @@
 #include "ui/widgets/StatusOverlayWidget.hpp"
 #include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <memory>
+#include <optional>
 #include <gtkmm.h>
 #include <gtkmm/label.h>
 
@@ -32,6 +33,7 @@ class MainWindow : public Gtk::Window {
 
     std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker{nullptr};
     Glib::Dispatcher alertsChangedDisp;
+    std::optional<eventpp::CallbackList<void(const std::vector<const jutta_bt_proto::Alert*>&)>::Handle> alertsHandle;
     backend::NfcCardReader nfcCardReader{};
     bool skipNextLogoutClicked{false};
 
@@ -55,10 +57,12 @@ class MainWindow : public Gtk::Window {
     void hide_status_overlay();
     void hide_main_overlay();
     void clear_main_overlay_children();
+
     void load_user_profile(const std::string& cardId);
     void load_user_profile(backend::storage::UserProfile* profile);
-
     void load_user(std::string userId);
+
+    void set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker);
 
     //-----------------------------Events:-----------------------------
     void on_inspector_clicked();
@@ -68,7 +72,7 @@ class MainWindow : public Gtk::Window {
     void on_full_screen_clicked();
     void on_edit_custom_coffee_clicked();
     void on_logout_clicked();
-    void on_reconnect_clicked();
+    void on_disconnect_clicked();
     bool on_key_pressed(GdkEventKey* event);
     bool on_window_state_changed(GdkEventWindowState* state);
     void on_custom_coffee_back_clicked();

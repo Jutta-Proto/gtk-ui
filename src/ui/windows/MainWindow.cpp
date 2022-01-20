@@ -116,7 +116,7 @@ void MainWindow::prep_overview_stack_page(Gtk::Stack* stack) {
 
     // Status bar:
     statusBarWidget.signal_logout_clicked().connect(sigc::mem_fun(this, &MainWindow::on_logout_clicked));
-    statusBarWidget.signal_reconnect_clicked().connect(sigc::mem_fun(this, &MainWindow::on_reconnect_clicked));
+    statusBarWidget.signal_disconnect_clicked().connect(sigc::mem_fun(this, &MainWindow::on_disconnect_clicked));
     mainBox->add(statusBarWidget);
 
     // Overlay:
@@ -147,7 +147,7 @@ void MainWindow::show_detect_coffee_maker() {
     }
     clear_main_overlay_children();
     mainOverlayBox->add(*coffeeMakerDetectionWidget);
-    mainOverlayBox->show_all();
+    mainOverlayBox->show();
 }
 
 void MainWindow::show_nfc_card_detection() {
@@ -157,7 +157,7 @@ void MainWindow::show_nfc_card_detection() {
     }
     clear_main_overlay_children();
     mainOverlayBox->add(*nfcCardDetectionWidget);
-    mainOverlayBox->show_all();
+    mainOverlayBox->show();
 }
 
 void MainWindow::clear_main_overlay_children() {
@@ -196,6 +196,23 @@ void MainWindow::hide_status_overlay() {
     statusOverlayBox->hide();
 }
 
+void MainWindow::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
+    if (alertsHandle) {
+        this->coffeeMaker->alertsChangedEventHandler.remove(*alertsHandle);
+        alertsHandle = std::nullopt;
+    }
+
+    this->coffeeMaker = coffeeMaker ? std::move(coffeeMaker) : nullptr;
+    statusBarWidget.set_coffee_maker(this->coffeeMaker);
+    coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
+    statusOverlayWidget.set_coffee_maker(this->coffeeMaker);
+    if (this->coffeeMaker) {
+        show_nfc_card_detection();
+        alertsHandle = this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
+    }
+    on_alerts_changed();
+}
+
 //-----------------------------Events:-----------------------------
 void MainWindow::on_inspector_clicked() {
     viewMoreBtn->get_popover()->popdown();
@@ -203,13 +220,7 @@ void MainWindow::on_inspector_clicked() {
 }
 
 void MainWindow::on_coffee_maker_detection_successfull(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
-    this->coffeeMaker = std::move(coffeeMaker);
-    statusBarWidget.set_coffee_maker(this->coffeeMaker);
-    coffeeSelectionWidget.set_coffee_maker(this->coffeeMaker);
-    statusOverlayWidget.set_coffee_maker(this->coffeeMaker);
-    show_nfc_card_detection();
-    this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
-    on_alerts_changed();
+    set_coffee_maker(std::move(coffeeMaker));
 }
 
 void MainWindow::on_nfc_card_detection_canceled() {
@@ -256,7 +267,9 @@ void MainWindow::on_logout_clicked() {
     show_nfc_card_detection();
 }
 
-void MainWindow::on_reconnect_clicked() {
+void MainWindow::on_disconnect_clicked() {
+    backend::CoffeeMakerConnectionHandler::get_instance().disconnect();
+    set_coffee_maker(nullptr);
     show_detect_coffee_maker();
 }
 
@@ -278,11 +291,13 @@ void MainWindow::on_custom_coffee_back_clicked() {
 void MainWindow::on_custom_coffee_profile_value_changed(backend::storage::UserProfile* /*profile*/) {}
 
 void MainWindow::on_alerts_changed() {
-    for (const jutta_bt_proto::Alert* alert : coffeeMaker->get_alerts()) {
-        assert(alert);
-        if (alert->type == "block") {
-            show_status_overlay();
-            return;
+    if (coffeeMaker) {
+        for (const jutta_bt_proto::Alert* alert : coffeeMaker->get_alerts()) {
+            assert(alert);
+            if (alert->type == "block") {
+                show_status_overlay();
+                return;
+            }
         }
     }
     hide_status_overlay();

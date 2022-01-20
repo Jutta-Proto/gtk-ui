@@ -14,6 +14,7 @@ CoffeeMakerButton::CoffeeMakerButton() : popoverMainBox(Gtk::Orientation::ORIENT
                                          statusPopover(*this) {
     prep_button();
     signal_clicked().connect(sigc::mem_fun(*this, &CoffeeMakerButton::on_btn_clicked));
+    disconnectBtn.signal_clicked().connect(sigc::mem_fun(*this, &CoffeeMakerButton::on_disconnect_clicked));
     backend::CoffeeMakerConnectionHandler::get_instance().signal_state_changed().connect(sigc::mem_fun(*this, &CoffeeMakerButton::on_connection_state_changed));
 }
 
@@ -38,9 +39,9 @@ void CoffeeMakerButton::prep_button() {
     // Popover:
     statusPopover.add(popoverMainBox);
 
-    // Reconnect:
-    popoverMainBox.add(reconnectBtn);
-    reconnectBtn.set_label("Reconnect");
+    // Disconnect:
+    popoverMainBox.add(disconnectBtn);
+    disconnectBtn.set_label("Disconnect");
     popoverMainBox.show_all();
 
     update_connection_state(backend::CoffeeMakerConnectionHandler::get_instance().get_state());
@@ -72,6 +73,10 @@ void CoffeeMakerButton::update_connection_state(backend::CoffeeMakerConnectionHa
     }
 }
 
+CoffeeMakerButton::type_signal_clicked CoffeeMakerButton::signal_disconnect_clicked() {
+    return m_signal_disconnect_clicked;
+}
+
 //-----------------------------Events:-----------------------------
 void CoffeeMakerButton::on_btn_clicked() {
     statusPopover.show();
@@ -79,5 +84,10 @@ void CoffeeMakerButton::on_btn_clicked() {
 
 void CoffeeMakerButton::on_connection_state_changed(backend::CoffeeMakerConnectionHandler::CoffeeMakerConnectionHandlerState state) {
     update_connection_state(state);
+}
+
+void CoffeeMakerButton::on_disconnect_clicked() {
+    statusPopover.hide();
+    m_signal_disconnect_clicked.emit();
 }
 }  // namespace ui::widgets

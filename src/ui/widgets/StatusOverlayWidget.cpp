@@ -1,5 +1,7 @@
 #include "StatusOverlayWidget.hpp"
+#include "eventpp/callbacklist.h"
 #include "ui/utils/UiUtils.hpp"
+#include <optional>
 #include <gtkmm/enums.h>
 
 namespace ui::widgets {
@@ -48,23 +50,32 @@ void StatusOverlayWidget::prep_widget() {
 }
 
 void StatusOverlayWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
+    if (alertsHandle) {
+        this->coffeeMaker->alertsChangedEventHandler.remove(*alertsHandle);
+        alertsHandle = std::nullopt;
+    }
+
     this->coffeeMaker = std::move(coffeeMaker);
     if (this->coffeeMaker) {
-        this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
-        on_alerts_changed();
+        alertsHandle = this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
     }
+    on_alerts_changed();
 }
 
 //-----------------------------Events:-----------------------------
 void StatusOverlayWidget::on_alerts_changed() {
     size_t blockingCount = 0;
     std::string statusText = "<span font_weight='bold'>Blocking:</span>";
-    for (const jutta_bt_proto::Alert* alert : coffeeMaker->get_alerts()) {
-        assert(alert);
-        if (alert->type == "block") {
-            blockingCount++;
-            statusText += "\n• " + alert->name;
+    if (coffeeMaker) {
+        for (const jutta_bt_proto::Alert* alert : coffeeMaker->get_alerts()) {
+            assert(alert);
+            if (alert->type == "block") {
+                blockingCount++;
+                statusText += "\n• " + alert->name;
+            }
         }
+    } else {
+        statusText += "\nNot connected";
     }
     statusLabel.set_markup(statusText);
 }

@@ -32,15 +32,25 @@ void CoffeeMakerStatusWidget::prep_button() {
 }
 
 void CoffeeMakerStatusWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
+    if (alertsHandle) {
+        this->coffeeMaker->alertsChangedEventHandler.remove(*alertsHandle);
+        alertsHandle = std::nullopt;
+    }
+
     this->coffeeMaker = std::move(coffeeMaker);
     if (this->coffeeMaker) {
-        this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
-        on_alerts_changed();
+        alertsHandle = this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
     }
+    on_alerts_changed();
 }
 
 //-----------------------------Events:-----------------------------
 void CoffeeMakerStatusWidget::on_alerts_changed() {
+    if (!coffeeMaker) {
+        this->set_visible(false);
+        return;
+    }
+
     size_t blockingCount = 0;
     size_t miscCount = 0;
     std::string statusBlockingText = "<span font_weight='bold'>Blocking:</span>";
@@ -60,7 +70,7 @@ void CoffeeMakerStatusWidget::on_alerts_changed() {
         this->set_label(std::to_string(blockingCount) + " ❌");
         this->set_visible(true);
     } else if (miscCount > 0) {
-        this->set_label(std::to_string(blockingCount) + " ⚠️");
+        this->set_label(std::to_string(miscCount) + " ⚠️");
         this->set_visible(true);
     } else {
         this->set_label("✅");

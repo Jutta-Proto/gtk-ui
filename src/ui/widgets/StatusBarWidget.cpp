@@ -7,6 +7,7 @@
 namespace ui::widgets {
 StatusBarWidget::StatusBarWidget() : Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL) {
     prep_widget();
+    coffeeMakerButton.signal_disconnect_clicked().connect(sigc::mem_fun(*this, &StatusBarWidget::on_disconnect_clicked));
 }
 
 void StatusBarWidget::set_user_profile(backend::storage::UserProfile* profile) {
@@ -30,8 +31,8 @@ StatusBarWidget::type_signal_clicked StatusBarWidget::signal_logout_clicked() {
     return m_signal_logout_clicked;
 }
 
-StatusBarWidget::type_signal_clicked StatusBarWidget::signal_reconnect_clicked() {
-    return m_signal_reconnect_clicked;
+StatusBarWidget::type_signal_clicked StatusBarWidget::signal_disconnect_clicked() {
+    return m_signal_disconnect_clicked;
 }
 
 void StatusBarWidget::prep_widget() {
@@ -96,7 +97,7 @@ void StatusBarWidget::on_logout_clicked() {
     m_signal_logout_clicked.emit();
 }
 
-void StatusBarWidget::on_reconnect_clicked() {
-    m_signal_reconnect_clicked.emit();
+void StatusBarWidget::on_disconnect_clicked() {
+    m_signal_disconnect_clicked.emit();
 }
 }  // namespace ui::widgets

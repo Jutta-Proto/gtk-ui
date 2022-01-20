@@ -5,6 +5,7 @@
 #include "jutta_bt_proto/CoffeeMakerLoader.hpp"
 #include <jutta_bt_proto/CoffeeMaker.hpp>
 #include <memory>
+#include <optional>
 #include <vector>
 #include <gtkmm.h>
 #include <gtkmm/flowbox.h>
@@ -15,6 +16,7 @@ class CoffeeSelectionWidget : public Gtk::FlowBox {
     std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker{nullptr};
     backend::storage::UserProfile* profile{nullptr};
     std::vector<std::unique_ptr<CoffeeButton>> products{};
+    std::optional<eventpp::CallbackList<void(const std::shared_ptr<jutta_bt_proto::Joe>& joe)>::Handle> joeHandle;
 
     using type_signal_edit_custom_coffee_clicked = sigc::signal<void>;
     type_signal_edit_custom_coffee_clicked m_signal_edit_custom_coffee_clicked;
