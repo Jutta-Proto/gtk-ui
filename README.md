@@ -2,7 +2,7 @@
 A `C++20` and [GTK 3](https://www.gtk.org/) based implementation for the jutta coffee maker UI to control JURA coffee makers over Bluetooth.
 The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-bt-cpp).
 
-**For an UI that supports the serial (UART) protocol click [here](https://github.com/Jutta-Proto/gtk-ui/tree/main).**
+**For an UI that supports the serial (UART) protocol click [here](https://github.com/Jutta-Proto/gtk-ui/tree/serial).**
 
 ## Example
 ### UI example
