@@ -49,23 +49,6 @@ endif()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 
-get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
-if (NOT isMultiConfig)
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "${ALLOWED_BUILD_TYPES}")
-    if (NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
-    elseif(NOT CMAKE_BUILD_TYPE IN_LIST ALLOWED_BUILD_TYPES)
-        message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
-    endif()
-else ()
-    unset(CMAKE_BUILD_TYPE)
-    foreach(TYPE ${ALLOWED_BUILD_TYPES})
-    if (NOT ${TYPE} IN_LIST CMAKE_CONFIGURATION_TYPES)
-        list(APPEND CMAKE_CONFIGURATION_TYPES ${TYPE})
-    endif()  
-    endforeach()  
-endif()
-
 # gtk3 stuff
 find_package(PkgConfig REQUIRED)
 # Additional search path since gtkmm-3.0 will usually be installed in /usr
@@ -74,9 +57,8 @@ pkg_check_modules(GTKMM gtkmm-3.0>=3.22 REQUIRED IMPORTED_TARGET)
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
   message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-  file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/v0.16.1/conan.cmake"
+  file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"
                 "${CMAKE_BINARY_DIR}/conan.cmake"
-                EXPECTED_HASH SHA256=396e16d0f5eabdc6a14afddbcfff62a54a7ee75c6da23f32f7a31bc85db23484
                 TLS_VERIFY ON)
 endif()
 
@@ -89,13 +71,12 @@ else()
     set(CONAN_BUILD_TYPE ${CMAKE_BUILD_TYPE})
 endif()
 
-conan_cmake_run(REQUIRES catch2/2.13.4
-                         nlohmann_json/3.9.1
-                         spdlog/1.8.5
-                         cryptopp/8.5.0
-                GENERATORS cmake_find_package
-                BUILD missing)
-
+conan_cmake_configure(REQUIRES catch2/2.13.8
+                               nlohmann_json/3.10.5
+                               spdlog/1.10.0
+                               cryptopp/8.6.0
+                      GENERATORS cmake_find_package
+                      BUILD missing)
 conan_cmake_autodetect(settings)
 conan_cmake_install(PATH_OR_REFERENCE .
                     BUILD missing
@@ -107,13 +88,12 @@ find_package(nlohmann_json REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(cryptopp REQUIRED)
 
-FetchContent_Declare(jutta_proto
-                     GIT_REPOSITORY         https://github.com/Jutta-Proto/protocol-cpp.git
-                     GIT_TAG main
-                     USES_TERMINAL_DOWNLOAD TRUE)   # <---- This is needed only for Ninja to show download progress
 set(JUTTA_PROTO_BUILD_TESTS OFF CACHE INTERNAL "" FORCE)
 set(JUTTA_PROTO_STATIC_ANALYZE OFF CACHE INTERNAL "" FORCE)
 set(JUTTA_PROTO_ENABLE_LINTING OFF CACHE INTERNAL "" FORCE)
+FetchContent_Declare(jutta_proto
+                     GIT_REPOSITORY https://github.com/Jutta-Proto/protocol-cpp.git
+                     GIT_TAG main)
 FetchContent_MakeAvailable(jutta_proto)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)

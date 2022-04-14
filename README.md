@@ -55,7 +55,7 @@ cmake --build .
 ## License and Copyright Notice 
 This piece of software uses the following other libraries and dependencies:
 
-### Catch2 (2.13.4)
+### Catch2 (2.13.8)
 Catch2 is mainly a unit testing framework for C++, but it also provides basic micro-benchmarking features, and simple BDD macros.
 
 <details>
@@ -89,7 +89,7 @@ DEALINGS IN THE SOFTWARE.
 
 </details>
 
-### Nlohmann JSON (3.9.1)
+### Nlohmann JSON (3.10.5)
 JSON for Modern C++.
 
 <details>
@@ -121,7 +121,7 @@ SOFTWARE.
 
 </details>
 
-### spdlog (1.8.5)
+### spdlog (1.10.0)
 Very fast, header-only/compiled, C++ logging library.
 
 <details>
@@ -157,7 +157,7 @@ and users must comply to its license: https://github.com/fmtlib/fmt/blob/master/
 
 </details>
 
-### Crypto++ (8.5.0)
+### Crypto++ (8.6.0)
 Free C++ Class Library of Cryptographic Schemes.
 
 <details>
