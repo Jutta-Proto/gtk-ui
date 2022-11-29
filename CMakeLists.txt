@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.16)
 
 set(PROJECT_DESCRIPTION "An unofficial UI to control JURA coffee makers.")
 
-project("Jutta_UI" 
-        VERSION 0.0.0
-        DESCRIPTION "${PROJECT_DESCRIPTION}"
-        HOMEPAGE_URL "https://github.com/Jutta-Proto/gtk-ui")
+project("Jutta_UI"
+    VERSION 0.0.0
+    DESCRIPTION "${PROJECT_DESCRIPTION}"
+    HOMEPAGE_URL "https://github.com/Jutta-Proto/gtk-ui")
 set(VERSION_NAME "dev")
 
 set(CMAKE_CXX_STANDARD 20)
@@ -13,13 +13,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 macro(jutta_ui_option OPTION_NAME OPTION_TEXT OPTION_DEFAULT)
     option(${OPTION_NAME} ${OPTION_TEXT} ${OPTION_DEFAULT})
+
     if(DEFINED ENV{${OPTION_NAME}})
         # Allow setting the option through an environment variable
         set(${OPTION_NAME} $ENV{${OPTION_NAME}})
     endif()
+
     if(${OPTION_NAME})
         add_definitions(-D${OPTION_NAME})
     endif()
+
     message(STATUS "  ${OPTION_NAME}: ${${OPTION_NAME}}")
 endmacro()
 
@@ -39,7 +42,7 @@ include(gcc_analyze)
 include(glib-resource-compiler)
 include(FetchContent)
 
-if (${JUTTA_UI_ENABLE_LINTING})
+if(${JUTTA_UI_ENABLE_LINTING})
     message(STATUS "Enabling linting")
     include(clang-tidy)
 else()
@@ -51,20 +54,22 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
 
 # gtk3 stuff
 find_package(PkgConfig REQUIRED)
+
 # Additional search path since gtkmm-3.0 will usually be installed in /usr
 set(ENV{PKG_CONFIG_PATH} "/usr/lib/pkgconfig")
 pkg_check_modules(GTKMM gtkmm-3.0>=3.22 REQUIRED IMPORTED_TARGET)
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-  message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-  file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"
-                "${CMAKE_BINARY_DIR}/conan.cmake"
-                TLS_VERIFY ON)
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://raw.githubusercontent.com/conan-io/cmake-conan/0.18.1/conan.cmake"
+        "${CMAKE_BINARY_DIR}/conan.cmake"
+        TLS_VERIFY ON)
 endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
 set(CONAN_CONFIGS"Release;Debug;RelWithDebInfo")
+
 if(NOT CMAKE_BUILD_TYPE IN_LIST CONAN_CONFIGS)
     set(CONAN_BUILD_TYPE "Debug")
 else()
@@ -72,16 +77,16 @@ else()
 endif()
 
 conan_cmake_configure(REQUIRES catch2/2.13.8
-                               nlohmann_json/3.10.5
-                               spdlog/1.10.0
-                               cryptopp/8.6.0
-                      GENERATORS cmake_find_package
-                      BUILD missing)
+    nlohmann_json/3.10.5
+    spdlog/1.10.0
+    cryptopp/8.7.0
+    GENERATORS cmake_find_package
+    BUILD missing)
 conan_cmake_autodetect(settings)
 conan_cmake_install(PATH_OR_REFERENCE .
-     BUILD missing
-     REMOTE conancenter
-     SETTINGS ${settings})
+    BUILD missing
+    REMOTE conancenter
+    SETTINGS ${settings})
 
 find_package(Catch2 REQUIRED)
 find_package(nlohmann_json REQUIRED)
@@ -89,8 +94,8 @@ find_package(spdlog REQUIRED)
 find_package(cryptopp REQUIRED)
 
 FetchContent_Declare(jutta_bt_proto
-                     GIT_REPOSITORY https://github.com/Jutta-Proto/protocol-bt-cpp.git
-                     GIT_TAG main)
+    GIT_REPOSITORY https://github.com/Jutta-Proto/protocol-bt-cpp.git
+    GIT_TAG main)
 FetchContent_MakeAvailable(jutta_bt_proto)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
@@ -105,4 +110,3 @@ if(${JUTTA_UI_BUILD_TESTS})
 else()
     message(STATUS "Testing is disabled")
 endif()
-
