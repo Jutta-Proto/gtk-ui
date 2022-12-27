@@ -52,6 +52,10 @@ cmake ..
 cmake --build .
 ```
 
+## Machine Files
+Since this lib uses the machine files provided by JURA in their Android APK, we have to extract them first. For this, you have to perform the steps described here:<br>
+https://github.com/Jutta-Proto/protocol-bt-cpp#machine-files
+
 ## License and Copyright Notice 
 This piece of software uses the following other libraries and dependencies:
 
