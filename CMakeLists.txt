@@ -95,7 +95,7 @@ find_package(cryptopp REQUIRED)
 
 FetchContent_Declare(jutta_bt_proto
     GIT_REPOSITORY https://github.com/Jutta-Proto/protocol-bt-cpp.git
-    GIT_TAG main)
+    GIT_TAG bcff06cd2916e2fdd8c39ac50d1c98ddb8efdca1) # 27.12.2022
 FetchContent_MakeAvailable(jutta_bt_proto)
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
