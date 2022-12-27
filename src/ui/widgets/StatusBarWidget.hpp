@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoffeeMakerButton.hpp"
+#include "CoffeeMakerLockButton.hpp"
 #include "CoffeeMakerStatusWidget.hpp"
 #include "backend/storage/UserProfileStorage.hpp"
 #include <jutta_bt_proto/CoffeeMaker.hpp>
@@ -19,6 +20,7 @@ class StatusBarWidget : public Gtk::Box {
     Gtk::Label userIdLabel{};
     CoffeeMakerStatusWidget statusWidget{};
     CoffeeMakerButton coffeeMakerButton{};
+    CoffeeMakerLockButton coffeeMakerLockButton{};
 
     backend::storage::UserProfile* profile{nullptr};
 

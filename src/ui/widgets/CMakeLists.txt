@@ -19,7 +19,9 @@ add_library(ui_widgets STATIC CoffeeSelectionWidget.hpp
                               StatusCircleWidget.cpp
                               StatusCircleWidget.hpp
                               StatusOverlayWidget.cpp
-                              StatusOverlayWidget.hpp)
+                              StatusOverlayWidget.hpp
+                              CoffeeMakerLockButton.cpp
+                              CoffeeMakerLockButton.hpp)
 
 target_link_libraries(ui_widgets PUBLIC PkgConfig::GTKMM jutta_bt_proto
                                  PRIVATE backend storage)

@@ -86,10 +86,20 @@ void StatusBarWidget::prep_widget() {
     statusWidget.set_margin_top(10);
     statusWidget.set_margin_bottom(10);
     pack_end(statusWidget, Gtk::PackOptions::PACK_SHRINK);
+
+    // Lock Coffee Maker:
+    coffeeMakerLockButton.set_margin_end(10);
+    coffeeMakerLockButton.set_margin_start(10);
+    coffeeMakerLockButton.set_margin_top(10);
+    coffeeMakerLockButton.set_margin_bottom(10);
+    coffeeMakerLockButton.set_valign(Gtk::Align::ALIGN_CENTER);
+    coffeeMakerLockButton.set_halign(Gtk::Align::ALIGN_END);
+    pack_end(coffeeMakerLockButton, Gtk::PackOptions::PACK_SHRINK);
 }
 
 void StatusBarWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
-    statusWidget.set_coffee_maker(std::move(coffeeMaker));
+    statusWidget.set_coffee_maker(coffeeMaker);
+    coffeeMakerLockButton.set_coffee_maker(std::move(coffeeMaker));
 }
 
 //-----------------------------Events:-----------------------------
