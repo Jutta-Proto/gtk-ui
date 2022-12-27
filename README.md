@@ -1,5 +1,5 @@
 # UI Bluetooth
-A `C++20` and [GTK 3](https://www.gtk.org/) based implementation for the jutta coffee maker UI to control JURA coffee makers over Bluetooth.
+A `C++20` and [GTK 3](https://www.gtk.org/)-based implementation for the jutta coffee maker UI to control JURA coffee makers over Bluetooth.
 The used protocol can be found [here](https://github.com/Jutta-Proto/protocol-bt-cpp).
 
 **For an UI that supports the serial (UART) protocol click [here](https://github.com/Jutta-Proto/gtk-ui/tree/serial).**
@@ -19,7 +19,7 @@ The following requirements are required to build this project.
 * A C++20 compatible compiler like [gcc](https://gcc.gnu.org/) or [clang](https://clang.llvm.org/)
 * The build system is written using [CMake](https://cmake.org/)
 * For managing dependencies in CMake, we are using [conan](https://conan.io/)
-* Since the user interface is build based on [GTK3](https://www.gtk.org/), an up to date GTK3 installation is also required.
+* Since the user interface is built based on [GTK3](https://www.gtk.org/), an up-to-date GTK3 installation is also required.
 
 ### Fedora
 To install those dependencies on Fedora, run the following commands:
