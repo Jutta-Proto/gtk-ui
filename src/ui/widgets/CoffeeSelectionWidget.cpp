@@ -6,6 +6,7 @@
 #include <giomm/file.h>
 #include <gtkmm/enums.h>
 #include <sigc++/functors/mem_fun.h>
+#include <spdlog/spdlog.h>
 
 namespace ui::widgets {
 CoffeeSelectionWidget::CoffeeSelectionWidget() {
@@ -88,6 +89,7 @@ void CoffeeSelectionWidget::clear_products() {
 void CoffeeSelectionWidget::on_coffee_button_clicked(const jutta_bt_proto::Product& product) {
     assert(coffeeMaker);
     coffeeMaker->request_coffee(product);
+    SPDLOG_INFO("Requesting product " + product.name + " (" + product.code + ")");
 }
 
 void CoffeeSelectionWidget::on_brew_custom_coffee_clicked(const jutta_bt_proto::Product& /*product*/) {
