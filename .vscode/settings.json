@@ -1,7 +1,4 @@
 {
-    "files.exclude": {
-        "**/build": true
-    },
     "cSpell.words": [
         "Pasi",
         "exps",
