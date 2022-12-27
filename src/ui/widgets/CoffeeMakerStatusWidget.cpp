@@ -33,13 +33,13 @@ void CoffeeMakerStatusWidget::prep_button() {
 
 void CoffeeMakerStatusWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
     if (alertsHandle) {
-        this->coffeeMaker->alertsChangedEventHandler.remove(*alertsHandle);
+        this->coffeeMaker->get_joe()->alertsChangedEventHandler.remove(*alertsHandle);
         alertsHandle = std::nullopt;
     }
 
     this->coffeeMaker = std::move(coffeeMaker);
     if (this->coffeeMaker) {
-        alertsHandle = this->coffeeMaker->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
+        alertsHandle = this->coffeeMaker->get_joe()->alertsChangedEventHandler.append([this](const std::vector<const jutta_bt_proto::Alert*>& /*alerts*/) { this->alertsChangedDisp.emit(); });
     }
     on_alerts_changed();
 }
