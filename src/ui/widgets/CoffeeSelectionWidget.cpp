@@ -27,32 +27,11 @@ void CoffeeSelectionWidget::prep_widget() {
 
     // Style:
     Glib::RefPtr<Gtk::CssProvider> cssProvider = get_css_provider();
-
-    // Add content:
-    // this->add(generate_button("Coffee", jutta_proto::CoffeeMaker::coffee_t::COFFEE, "/ui/coffee.png", cssProvider));
-    // this->add(generate_button("Espresso", jutta_proto::CoffeeMaker::coffee_t::ESPRESSO, "/ui/espresso.png", cssProvider));
-    // this->add(generate_button("Cappuccino", jutta_proto::CoffeeMaker::coffee_t::CAPPUCCINO, "/ui/coffee.png", cssProvider));
-    // this->add(generate_button("Milk foam", jutta_proto::CoffeeMaker::coffee_t::MILK_FOAM, "/ui/coffee.png", cssProvider));
-    // this->add(generate_button("Caffe Barista", jutta_proto::CoffeeMaker::coffee_t::CAFFE_BARISTA, "/ui/coffee.png", cssProvider));
-    // this->add(generate_button("Lungo Barista", jutta_proto::CoffeeMaker::coffee_t::LUNGO_BARISTA, "/ui/coffee.png", cssProvider));
-    // this->add(generate_button("Espresso doppio", jutta_proto::CoffeeMaker::coffee_t::ESPRESSO_DOPPIO, "/ui/coffee.png", cssProvider));
-    // this->add(generate_button("Macciato", jutta_proto::CoffeeMaker::coffee_t::MACCHIATO, "/ui/coffee.png", cssProvider));
-
-    // add_custom_coffee_buttons(cssProvider);
 }
 
 void CoffeeSelectionWidget::set_user_profile(backend::storage::UserProfile* profile) {
     this->profile = profile;
 }
-
-/*void CoffeeSelectionWidget::add_custom_coffee_buttons(const Glib::RefPtr<Gtk::CssProvider>& cssProvider) {
-    // CoffeeButton* brewCustom = Gtk::make_managed<CoffeeButton>("Custom Coffee", jutta_proto::CoffeeMaker::coffee_t::COFFEE, "/ui/coffee.png", cssProvider);
-    // brewCustom->signal_clicked_sender().connect(sigc::mem_fun(this, &CoffeeSelectionWidget::on_brew_custom_coffee_clicked));
-    // this->add(*brewCustom);
-    // CoffeeButton* editCustom = Gtk::make_managed<CoffeeButton>("Edit\nCustom Coffee", jutta_proto::CoffeeMaker::coffee_t::COFFEE, "/ui/coffee_gear.png", cssProvider);
-    // editCustom->signal_clicked_sender().connect(sigc::mem_fun(this, &CoffeeSelectionWidget::on_edit_custom_coffee_clicked));
-    // this->add(*editCustom);
-}*/
 
 void CoffeeSelectionWidget::set_coffee_maker(std::shared_ptr<jutta_bt_proto::CoffeeMaker> coffeeMaker) {
     if (joeHandle) {
