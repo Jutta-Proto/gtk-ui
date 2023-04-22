@@ -36,6 +36,14 @@ pip3 install --user conan==1.59.0 # conan 2.x.x is not supported right now
 ```
 For all the other requirements, head over here: https://github.com/Jutta-Proto/hardware-pi#raspberry-pi-os
 
+### Conan
+When you installed `conan` on your system you might have to extend the `PATH` environment variable for CMake to be able to find `conan`.
+
+```bash
+echo "export PATH=$PATH:/home/pi/.local/bin" >> ~/.bashrc
+source ~/.bashrc
+```
+
 ## Building
 Run the following commands to build this project:
 ```bash
